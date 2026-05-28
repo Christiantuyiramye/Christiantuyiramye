@@ -10,7 +10,7 @@ from datetime import datetime, date, timedelta
 from logging.handlers import RotatingFileHandler
 
 import numpy as np
-from flask import Flask, jsonify, request, Response, send_from_directory
+from flask import Flask, jsonify, render_template, request, Response, send_from_directory
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import joinedload
 
@@ -938,6 +938,11 @@ def delete_holiday(holiday_id):
 @app.route("/static/faces/<path:filename>")
 def serve_face(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
+
+
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 
 @app.route("/api/health", methods=["GET"])

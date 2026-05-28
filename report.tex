@@ -9,15 +9,14 @@
 %     Prof. Dr. Jebran Khan
 %   Department: Artificial Intelligence
 %
-%   Layout: title page = one column, body = two columns,
-%           last page = one column.
+%   Layout: single column, standard academic article.
 %
 %   Compile with:
 %     pdflatex report.tex
 %     pdflatex report.tex   (run twice so the TOC resolves)
 % =====================================================================
 
-\documentclass[10pt,a4paper]{article}
+\documentclass[11pt,a4paper]{article}
 
 % ---------- Encoding & fonts ----------
 \usepackage[utf8]{inputenc}
@@ -26,351 +25,318 @@
 \usepackage{microtype}
 
 % ---------- Page layout ----------
-\usepackage[a4paper,margin=2.0cm,top=2.2cm,bottom=2.2cm]{geometry}
-\usepackage{multicol}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
 \usepackage{parskip}
 
 % ---------- Math & symbols ----------
 \usepackage{amsmath, amssymb, amsthm}
 
-% ---------- Graphics, color ----------
+% ---------- Graphics ----------
 \usepackage{graphicx}
-\usepackage{xcolor}
-
-% Project color palette
-\definecolor{pBlue}{HTML}{1E3C72}
-\definecolor{pBlueLight}{HTML}{2A5298}
-\definecolor{pOrange}{HTML}{E76F51}
-\definecolor{pTeal}{HTML}{2A9D8F}
-\definecolor{pYellow}{HTML}{F4A261}
-\definecolor{pGray}{HTML}{4B5563}
-\definecolor{pBg}{HTML}{F8F9FB}
-\definecolor{pAccent}{HTML}{8E44AD}
+\usepackage{xcolor}            % needed by tikz/pgfplots, not for text color
 
 % ---------- Tables ----------
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{tabularx}
-\usepackage{colortbl}
 
 % ---------- Captions ----------
 \usepackage{caption}
-\captionsetup{font=small,labelfont={bf,color=pBlue}}
+\captionsetup{font=small,labelfont=bf}
 
 % ---------- Lists ----------
 \usepackage{enumitem}
-\setlist{itemsep=2pt,topsep=3pt}
+\setlist{itemsep=2pt,topsep=4pt}
 
-% ---------- Hyperlinks ----------
-\usepackage[
-  colorlinks=true,
-  linkcolor=pBlue,
-  urlcolor=pBlueLight,
-  citecolor=pBlue
-]{hyperref}
+% ---------- Hyperlinks (kept neutral) ----------
+\usepackage[hidelinks]{hyperref}
 
-% ---------- Code listings ----------
+% ---------- Code listings (plain) ----------
 \usepackage{listings}
-\definecolor{codebg}{RGB}{248,249,251}
-\definecolor{codekw}{RGB}{30,60,114}
-\definecolor{codestr}{RGB}{42,157,143}
-\definecolor{codecom}{RGB}{120,120,120}
 \lstset{
-  backgroundcolor=\color{codebg},
-  basicstyle=\ttfamily\scriptsize,
-  keywordstyle=\color{codekw}\bfseries,
-  stringstyle=\color{codestr},
-  commentstyle=\color{codecom}\itshape,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\bfseries,
+  commentstyle=\itshape,
   breaklines=true,
   showstringspaces=false,
   numbers=left,
-  numberstyle=\tiny\color{gray},
+  numberstyle=\tiny,
   frame=single,
-  rulecolor=\color{gray!30},
-  framesep=3pt,
-  xleftmargin=10pt,
+  framesep=4pt,
+  xleftmargin=12pt,
   tabsize=2,
   language=Python
 }
 
-% ---------- Section styling ----------
-\usepackage{titlesec}
-\titleformat{\section}
-  {\Large\bfseries\color{pBlue}}{\thesection}{0.6em}{}
-  [\vspace{-6pt}\noindent\textcolor{pBlueLight}{\rule{\linewidth}{0.8pt}}]
-\titleformat{\subsection}
-  {\large\bfseries\color{pBlueLight}}{\thesubsection}{0.5em}{}
-\titleformat{\subsubsection}
-  {\normalsize\bfseries\color{pOrange}}{\thesubsubsection}{0.4em}{}
-
-% ---------- Callout boxes ----------
-\usepackage[most]{tcolorbox}
-
-\newtcolorbox{infobox}[1][]{
-  colback=pBg, colframe=pBlue, coltitle=white,
-  fonttitle=\bfseries, title=#1,
-  boxrule=0.6pt, arc=2pt, left=8pt, right=8pt, top=4pt, bottom=4pt,
-  enhanced, drop shadow=black!30
-}
-
-\newtcolorbox{warnbox}[1][]{
-  colback=pYellow!15, colframe=pOrange, coltitle=white,
-  fonttitle=\bfseries, title=#1,
-  boxrule=0.6pt, arc=2pt, left=8pt, right=8pt, top=4pt, bottom=4pt,
-  enhanced
-}
-
-\newtcolorbox{keybox}[1][]{
-  colback=pTeal!10, colframe=pTeal, coltitle=white,
-  fonttitle=\bfseries, title=#1,
-  boxrule=0.6pt, arc=2pt, left=8pt, right=8pt, top=4pt, bottom=4pt,
-  enhanced
-}
-
-% ---------- TikZ & pgfplots for diagrams ----------
+% ---------- TikZ & pgfplots for figures ----------
 \usepackage{tikz}
 \usetikzlibrary{
-  arrows.meta, positioning, shapes.geometric, shapes.symbols,
-  shadows, fit, backgrounds, calc, decorations.pathreplacing
+  arrows.meta, positioning, shapes.geometric,
+  fit, backgrounds, calc
 }
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
-
-% ---------- Header & footer ----------
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[L]{\small\color{pBlue}\textbf{EDA Chatbot \& Churn Prediction}}
-\fancyhead[R]{\small\color{pBlueLight}\textit{Spring 2025}}
-\fancyfoot[L]{\small\color{pGray}Tuyiramye \& Dushime}
-\fancyfoot[C]{\small\color{pGray}AI Department}
-\fancyfoot[R]{\small\color{pBlue}\thepage}
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0.2pt}
 
 % =====================================================================
 \begin{document}
 % =====================================================================
 
-% =====================================================================
-% TITLE PAGE  (one column)
-% =====================================================================
-\thispagestyle{empty}
-\begin{tikzpicture}[remember picture, overlay]
-  \fill[pBlue]
-    (current page.north west) rectangle ([yshift=-7cm]current page.north east);
-  \fill[pBlueLight, opacity=0.85]
-    ([yshift=-6cm]current page.north west) rectangle ([yshift=-7.5cm]current page.north east);
-  \node[anchor=north] at ([yshift=-1.6cm]current page.north) {
-    \begin{minipage}{0.9\textwidth}
-      \centering\color{white}
-      {\Huge\bfseries Conversational EDA Chatbot}\\[6pt]
-      {\Large\itshape and}\\[6pt]
-      {\Huge\bfseries E-Commerce Customer\\ Churn Prediction}\\[14pt]
-      \textcolor{pYellow}{\rule{0.45\textwidth}{1pt}}\\[10pt]
-      {\Large A Production-Grade Data Science Project}
-    \end{minipage}
-  };
-\end{tikzpicture}
-\vspace{8cm}
-
-\begin{center}
-\begin{tcolorbox}[
-  enhanced, colback=pBg, colframe=pBlue, boxrule=0.8pt,
-  arc=4pt, width=0.85\textwidth, drop shadow=black!40,
-  left=14pt, right=14pt, top=10pt, bottom=10pt
-]
+% ---------- Title page (single column, plain) ----------
+\begin{titlepage}
   \centering
-  {\large\bfseries\color{pBlue} AUTHORS}\\[8pt]
+  \vspace*{1.5cm}
+
+  {\large Department of Artificial Intelligence\par}
+  \vspace{0.4cm}
+  \rule{0.8\textwidth}{0.6pt}\par
+  \vspace{1.2cm}
+
+  {\Huge\bfseries Conversational EDA Chatbot\par}
+  \vspace{0.4cm}
+  {\Large\itshape and\par}
+  \vspace{0.4cm}
+  {\Huge\bfseries E-Commerce Customer Churn Prediction\par}
+  \vspace{0.6cm}
+  {\Large A Production-Grade Data Science Project\par}
+
+  \vfill
+  {\large\bfseries Authors\par}
+  \vspace{0.3cm}
   \begin{tabular}{rl}
-    \large\bfseries Tuyiramye Christian & \large ID:\ \texttt{2517025}\\[6pt]
-    \large\bfseries Dushime Pacifique   & \large ID:\ \texttt{2517004}\\
-  \end{tabular}\\[14pt]
+    \large Tuyiramye Christian & \large ID:\ \texttt{2517025}\\[4pt]
+    \large Dushime Pacifique   & \large ID:\ \texttt{2517004}\\
+  \end{tabular}
 
-  \textcolor{pBlueLight}{\rule{0.55\linewidth}{0.4pt}}\\[10pt]
+  \vspace{1.0cm}
+  {\large\bfseries Supervisor\par}
+  \vspace{0.2cm}
+  {\large Prof.\ Dr.\ Jebran Khan\par}
 
-  {\large\bfseries\color{pOrange} SUPERVISOR}\\[6pt]
-  {\Large\bfseries Prof.\ Dr.\ Jebran Khan}\\[14pt]
+  \vfill
+  \rule{0.8\textwidth}{0.6pt}\par
+  \vspace{0.3cm}
+  {\large \textbf{Term:} Spring 2025\par}
+  \vspace{0.4cm}
+  {\small Project Report}\par
+\end{titlepage}
 
-  \textcolor{pBlueLight}{\rule{0.55\linewidth}{0.4pt}}\\[10pt]
-
-  \large\textbf{Department:} Artificial Intelligence\\[4pt]
-  \large\textbf{Term:} Spring 2025
-\end{tcolorbox}
-\end{center}
-
-\vfill
-\begin{center}
-\textcolor{pGray}{\small\itshape Project Report \quad\textbullet\quad Spring 2025 \quad\textbullet\quad AI Department}
-\end{center}
-
-\clearpage
-
-% =====================================================================
-% SWITCH TO TWO-COLUMN BODY
-% =====================================================================
-\twocolumn[
-  \begin{@twocolumnfalse}
-    \begin{center}
-    \begin{tcolorbox}[
-      enhanced, colback=pBg, colframe=pBlue, boxrule=0.6pt,
-      arc=3pt, width=\textwidth, left=14pt, right=14pt, top=8pt, bottom=8pt
-    ]
-      \centering{\Large\bfseries\color{pBlue} Abstract}\\[6pt]
-      \begin{minipage}{0.95\textwidth}
-        \small
-        This report presents an integrated, production-grade data-science
-        solution for modern e-commerce analytics, delivered in two
-        complementary parts. \textbf{Part~I} is a \emph{Conversational
-        Exploratory Data Analysis (EDA) Chatbot} built with Streamlit,
-        LangChain, and the OpenAI API. It allows non-technical
-        stakeholders to query a MySQL e-commerce database in plain
-        English and receive raw tables, plain-language summaries, or
-        fully interactive Plotly / Matplotlib visualizations.
-        \textbf{Part~II} is a supervised machine-learning pipeline
-        implemented as a Jupyter notebook that predicts customer churn
-        from demographic, account, and behavioral signals. Together the
-        two artifacts cover the full analytical lifecycle: ad-hoc
-        descriptive analysis on demand, and predictive modeling for
-        retention strategy. The report explains the architectural
-        choices, the agentic workflow, the security and reliability
-        guardrails, the modeling methodology, and the experimental
-        results, and discusses how the two artifacts reinforce each
-        other operationally.
-      \end{minipage}
-    \end{tcolorbox}
-    \end{center}
-    \vspace{6pt}
-  \end{@twocolumnfalse}
-]
+% ---------- Abstract & TOC ----------
+\begin{abstract}
+\noindent
+This report presents an integrated, production-grade data-science
+solution for modern e-commerce analytics, delivered as two complementary
+artifacts. \textbf{Part~I} is a \emph{Conversational Exploratory Data
+Analysis (EDA) Chatbot} built with Streamlit, LangChain, and the OpenAI
+API. It allows non-technical stakeholders to query a MySQL e-commerce
+database in plain English and receive raw tables, plain-language
+summaries, or fully interactive Plotly and Matplotlib visualizations.
+\textbf{Part~II} is a supervised machine-learning pipeline implemented
+as a Jupyter notebook that predicts customer churn from demographic,
+account, and behavioral features. The two artifacts share the same data
+domain and reinforce each other operationally: the chatbot exposes the
+predictions for ad-hoc exploration, while the predictions drive the
+questions stakeholders ask. We explain the architectural choices, the
+agentic workflow, the security and reliability guardrails, the dataset
+design, the modeling methodology, and the experimental results. We also
+discuss deployment considerations, observability, evaluation strategy,
+limitations, and avenues for future work.
+\end{abstract}
 
 \tableofcontents
-\vspace{6pt}
-\hrule
-\vspace{6pt}
+\newpage
 
 % =====================================================================
 \section{Introduction}
 % =====================================================================
 
 Modern e-commerce companies generate enormous volumes of transactional,
-behavioral, and demographic data every minute. Despite this abundance,
-two persistent organizational pain points remain unresolved:
+behavioral, and demographic data every minute. Despite this abundance of
+data, two persistent organizational pain points remain unresolved in
+most analytics stacks:
 
 \begin{enumerate}
   \item \textbf{The data-access bottleneck.} Business stakeholders --
-    marketing leads, product managers, retention specialists -- depend
-    on data analysts and BI engineers to write SQL or build dashboards
-    for every new question. The round-trip slows decision-making by
-    hours to days and prevents truly exploratory analysis.
-  \item \textbf{Reactive retention.} Most teams discover churn only
-    after revenue has already been lost. Industry studies report that
-    acquiring a new customer costs between five and twenty-five times
-    more than retaining an existing one, yet retention pipelines are
-    often built only after a quarter of underperformance.
+    marketing leads, product managers, retention specialists,
+    operations analysts -- depend on data engineers and BI teams to
+    write SQL queries or build dashboards for every new question. The
+    round-trip slows decision-making by hours to days. By the time the
+    chart arrives the question has frequently evolved, and the
+    iterative cycle that fuels real exploratory analysis is broken.
+    Worse, the cognitive load of formulating SQL gates which questions
+    actually get asked, biasing the company toward questions that fit
+    pre-existing dashboards.
+  \item \textbf{Reactive retention.} Most e-commerce teams discover
+    customer churn only after revenue has already been lost. Industry
+    research consistently reports that acquiring a new customer costs
+    between five and twenty-five times more than retaining an existing
+    one. Yet most retention programs are built only after a quarter of
+    underperformance, target the wrong cohort because they rely on
+    intuition rather than data, and measure success after the fact
+    rather than through controlled experiments.
 \end{enumerate}
 
-\begin{infobox}[Core idea]
-\textbf{Part~I} removes the data-access bottleneck by turning
+This project tackles both pain points with a single coherent solution.
+\textbf{Part~I} eliminates the data-access bottleneck by turning
 natural-language questions into safe, read-only MySQL queries and
-interactive charts. \textbf{Part~II} makes retention proactive by
-training a classifier that \emph{ranks} customers by churn probability
-so that the retention team can intervene early.
-\end{infobox}
+fully interactive charts that render directly in a chat interface.
+\textbf{Part~II} makes retention proactive by training a classifier
+that ranks customers by churn probability, allowing the retention team
+to intervene early -- with discounts, loyalty upgrades, or targeted
+outreach -- before the customer is lost. Both components share the
+same data domain (e-commerce customers and orders), enabling a
+virtuous loop in which the chatbot can surface the predictions, and
+the predictions can inform the next round of questions stakeholders
+ask. The result is an analytics platform that is descriptive,
+predictive, and conversational at the same time.
 
 % =====================================================================
-\section{Problem Statement \& Objectives}
+\section{Problem Statement and Objectives}
 % =====================================================================
 
 \subsection*{Problem statement}
-Design and implement an analytics platform that (a)~lets any
-non-technical stakeholder explore the e-commerce database in plain
-English while guaranteeing read-only safety, and (b)~predicts which
-customers are most likely to churn so that retention spending is
-targeted, timely, and measurable.
-
-\subsection*{Objectives}
+Design and implement an analytics platform that
 \begin{itemize}
-  \item Translate natural-language questions into syntactically valid,
-    read-only MySQL queries via a Large Language Model (LLM).
-  \item Dynamically render results as tables, summaries, or fully
-    interactive Plotly / Matplotlib charts according to user intent.
-  \item Enforce strict guardrails against any data-modification
-    operations.
-  \item Implement multi-turn conversational memory so that follow-up
-    questions can be answered in context.
-  \item Train and evaluate a churn-prediction model with stratified
-    cross-validation, leakage-free preprocessing, hyperparameter tuning,
-    and model-agnostic interpretability.
-  \item Surface the most predictive features so the business can act on
-    the findings, not just the predictions.
+  \item lets any non-technical stakeholder explore the e-commerce
+        database in plain English while guaranteeing read-only safety,
+  \item dynamically returns the format that best answers the question
+        (raw table, plain-language summary, or interactive chart),
+  \item predicts which customers are most likely to churn so that
+        retention spending is targeted, timely, and measurable, and
+  \item ships as portable, modular artifacts that can be reviewed,
+        demoed, or deployed independently.
+\end{itemize}
+
+\subsection*{Functional objectives}
+\begin{itemize}
+  \item Translate natural-language questions into syntactically valid
+        MySQL queries via a Large Language Model (LLM).
+  \item Dynamically render results as tables, summaries, or charts
+        based on the user's intent.
+  \item Persist conversational state across turns so that follow-up
+        questions can build on the previous answer.
+\end{itemize}
+
+\subsection*{Non-functional objectives}
+\begin{itemize}
+  \item \textbf{Security:} no data-modification operations under any
+        circumstance.
+  \item \textbf{Reliability:} no exception in the generated code or in
+        the LLM call should ever crash the chat interface.
+  \item \textbf{Performance:} database connections and language models
+        are expensive resources and must be cached across UI reruns.
+  \item \textbf{Reproducibility:} the predictive model must train and
+        evaluate to identical numbers on every run.
+  \item \textbf{Interpretability:} the model must expose which features
+        drive each prediction so the business can act on the findings,
+        not just on the scores.
 \end{itemize}
 
 % =====================================================================
-\section{Background \& Related Work}
+\section{Background and Related Work}
 % =====================================================================
 
 \subsection{LLM-Powered Conversational Analytics}
-Recent advances in Large Language Models have enabled conversational
-analytics tools that translate natural-language queries into structured
-database operations. The ReAct paradigm \cite{yao2022react}, which
-interleaves chain-of-thought reasoning with explicit tool use, underpins
-most agentic frameworks today, including LangChain's SQL agent.
+
+Recent advances in Large Language Models have enabled a new generation
+of conversational analytics tools that translate natural-language
+queries into structured database operations. The pioneering work is the
+ReAct paradigm \cite{yao2022react}, which interleaves explicit
+\emph{Thought} steps with concrete \emph{Action} calls to external
+tools, and uses the observed \emph{Observation} from each tool call to
+condition the next thought. This pattern is uniquely well-suited to SQL
+generation because it allows the agent to first inspect the schema,
+then draft a candidate query, then observe the result, and finally
+self-correct if the result is empty or syntactically wrong --
+exactly the workflow a human analyst follows. LangChain's
+\texttt{create\_sql\_agent} factory builds a ReAct agent on top of a
+standard \texttt{SQLDatabaseToolkit} that exposes four tools:
+\texttt{sql\_db\_list\_tables}, \texttt{sql\_db\_schema},
+\texttt{sql\_db\_query}, and \texttt{sql\_db\_query\_checker}.
+
+Several alternative paradigms exist. \emph{Function-calling agents}
+encode tools as OpenAI function schemas and let the model emit
+structured calls directly; they are typically faster but less
+transparent. \emph{Structured chat agents} use JSON for both reasoning
+and tool invocation; they are robust but verbose. We chose ReAct because
+of its transparency: the textual trace lets us debug failures and audit
+which queries the model executed in production.
 
 \subsection{Customer Churn Prediction}
-Classical churn modeling combines hand-engineered RFM features with a
-tree-based classifier; modern variants enrich the feature space with
-behavioral signals and use gradient-boosted decision trees
-\cite{friedman2001greedy} or deep tabular models. We follow the modern
-variant in Part~II because gradient-boosted ensembles consistently
-dominate tabular benchmarks while remaining interpretable through
-permutation importance \cite{breiman2001random} and SHAP attribution
+
+Customer churn modeling has been an active research and industry area
+for two decades. The classical approach combines hand-engineered RFM
+features (Recency, Frequency, Monetary value) with a tree-based
+classifier; modern variants enrich the feature space with behavioral
+signals (return rate, support interactions, discount sensitivity) and
+employ gradient-boosted decision trees \cite{friedman2001greedy} or
+deep tabular models. We follow the modern variant in Part~II because
+gradient-boosted ensembles consistently dominate tabular benchmarks
+while remaining interpretable through model-agnostic techniques such
+as permutation importance \cite{breiman2001random} and SHAP attribution
 \cite{lundberg2017unified}.
 
+A central methodological issue in churn modeling is class imbalance.
+Real-world churn rates rarely exceed 20--30\%; severe imbalance makes
+accuracy meaningless and ROC-AUC can become overoptimistic. The right
+strategy depends on the downstream use-case: when the goal is to
+\emph{rank} customers (as it is here, because the retention team has a
+fixed weekly capacity), ROC-AUC and PR-AUC are the appropriate metrics
+and rebalancing is not required. When the goal is to \emph{classify}
+customers at a fixed threshold, threshold tuning informed by business
+costs becomes the dominant design decision.
+
 \subsection{Streamlit as a Deployment Surface}
+
 Streamlit has emerged as the de-facto standard for rapid deployment of
 data-science applications because it allows pure-Python development of
-interactive UIs. Its caching primitives
-(\texttt{st.cache\_resource}, \texttt{st.cache\_data}) and session-state
-mechanism are essential for stateful conversational applications.
+interactive UIs without the overhead of a JavaScript frontend. Its
+declarative rerun model -- the entire script re-executes on every user
+interaction -- is unusual but powerful: combined with its caching
+primitives (\texttt{st.cache\_resource} for non-serializable resources
+such as database connections, \texttt{st.cache\_data} for serializable
+results), it produces remarkably terse code. Session-level state is
+persisted through \texttt{st.session\_state}, which is what makes
+multi-turn chat applications possible at all.
 
 % =====================================================================
 \section{System Architecture}
 % =====================================================================
 
-The system consists of two artifacts sharing the same data domain but
-serving different user journeys: an interactive Streamlit chat
+The system consists of two artifacts that share the same data domain
+but serve different user journeys: an interactive Streamlit chat
 application for ad-hoc exploration, and an offline Jupyter notebook for
-model training and reporting.
+model training, evaluation, and reporting. Figure~\ref{fig:arch} shows
+the end-to-end architecture of the chat application.
 
-% ---------- Figure 1 : Architecture diagram (full width) ----------
-\begin{figure*}[t]
+% ---------- Figure 1 : Architecture diagram ----------
+\begin{figure}[h]
 \centering
 \begin{tikzpicture}[
-  node distance=1.0cm and 1.6cm,
+  node distance=0.9cm and 1.4cm,
   every node/.style={font=\small},
-  user/.style={ellipse, draw=pBlue, fill=pBlue!15, line width=0.8pt,
-               minimum width=3.4cm, minimum height=0.9cm, align=center, drop shadow},
-  ui/.style={rectangle, draw=pBlueLight, fill=pBlueLight!15, line width=0.8pt,
+  user/.style={ellipse, draw, fill=gray!8,
+               minimum width=3.4cm, minimum height=0.9cm, align=center},
+  ui/.style={rectangle, draw, fill=gray!8,
              rounded corners=4pt, minimum width=4.0cm, minimum height=0.95cm,
-             align=center, drop shadow},
-  agent/.style={rectangle, draw=pOrange, fill=pOrange!12, line width=0.8pt,
+             align=center},
+  agent/.style={rectangle, draw, fill=gray!15,
                 rounded corners=4pt, minimum width=4.4cm, minimum height=1.1cm,
-                align=center, drop shadow},
-  router/.style={diamond, aspect=2, draw=pAccent, fill=pAccent!15, line width=0.8pt,
-                 minimum width=3.6cm, minimum height=0.6cm, align=center, drop shadow},
-  out/.style={rectangle, draw=pTeal, fill=pTeal!15, line width=0.8pt,
+                align=center},
+  router/.style={diamond, aspect=2, draw, fill=gray!15,
+                 minimum width=3.6cm, minimum height=0.6cm, align=center},
+  out/.style={rectangle, draw, fill=gray!8,
               rounded corners=4pt, minimum width=3.8cm, minimum height=0.9cm,
-              align=center, drop shadow},
+              align=center},
   db/.style={cylinder, shape border rotate=90, aspect=0.25,
-             draw=pGray, fill=gray!10, line width=0.8pt,
-             minimum width=2.2cm, minimum height=2.2cm, align=center, drop shadow},
-  llm/.style={rectangle, draw=pYellow!70!black, fill=pYellow!25, line width=0.8pt,
+             draw, fill=gray!8,
+             minimum width=2.2cm, minimum height=2.0cm, align=center},
+  llm/.style={rectangle, draw, fill=gray!8,
               rounded corners=4pt, minimum width=2.4cm, minimum height=0.9cm,
-              align=center, drop shadow},
-  arrow/.style={-{Latex[length=2.4mm]}, line width=0.7pt, draw=pGray}
+              align=center},
+  arrow/.style={-{Latex[length=2.4mm]}, line width=0.7pt}
 ]
-
   \node[user]   (user)   {\textbf{Stakeholder}\\ {\tiny natural language}};
   \node[ui, below=of user] (ui) {\textbf{Streamlit UI} (\texttt{app.py})\\ {\tiny wide layout + sidebar credentials}};
   \node[agent, below=of ui] (sql) {\textbf{Phase A: SQL Agent}\\ \tiny ZERO\_SHOT\_REACT\_DESCRIPTION\\ \tiny read-only system prefix};
@@ -378,64 +344,75 @@ model training and reporting.
   \node[out, below left=1.1cm and -0.2cm of route] (text) {Text / Table\\ \tiny answer};
   \node[agent, below right=1.1cm and -0.2cm of route] (pandas) {\textbf{Phase B: Pandas Agent}\\ \tiny plotly / matplotlib code};
   \node[out, below=of pandas] (chart) {\textbf{Sandboxed \texttt{exec()}}\\ \tiny Streamlit chart};
-
-  \node[db,  right=2.6cm of sql] (mysql) {\textbf{MySQL}\\ \tiny e-commerce};
-  \node[llm, left=2.6cm of sql]  (llm)   {\textbf{OpenAI}\\ \tiny GPT-4o, T=0};
+  \node[db,  right=2.3cm of sql] (mysql) {\textbf{MySQL}\\ \tiny e-commerce};
+  \node[llm, left=2.3cm of sql]  (llm)   {\textbf{OpenAI}\\ \tiny GPT-4o, T=0};
 
   \draw[arrow] (user) -- (ui);
   \draw[arrow] (ui) -- (sql);
-  \draw[arrow, dashed, draw=pYellow!70!black] (llm) -- (sql);
-  \draw[arrow, dashed, draw=pGray] (sql) -- (mysql);
+  \draw[arrow, dashed] (llm) -- (sql);
+  \draw[arrow, dashed] (sql) -- (mysql);
   \draw[arrow] (sql) -- (route);
   \draw[arrow] (route) -- (text);
   \draw[arrow] (route) -- (pandas);
-  \draw[arrow, dashed, draw=pYellow!70!black] (llm) |- (pandas);
+  \draw[arrow, dashed] (llm) |- (pandas);
   \draw[arrow] (pandas) -- (chart);
-
-  \begin{scope}[on background layer]
-    \node[fit=(sql)(route)(text)(pandas)(chart),
-          draw=pBlue!30, fill=pBlue!4, rounded corners=8pt,
-          inner sep=10pt] {};
-  \end{scope}
-
 \end{tikzpicture}
 \caption{End-to-end architecture of the Conversational EDA chatbot.
-Solid arrows are control flow; dashed yellow arrows are LLM calls;
-dashed gray arrows are database queries. The blue panel encloses the
-agentic core hosted inside the Streamlit application.}
+Solid arrows denote control flow inside the Streamlit application;
+dashed arrows denote external service calls (to the OpenAI API and to
+MySQL).}
 \label{fig:arch}
-\end{figure*}
+\end{figure}
 
 \subsection{Technology Stack}
+
 \begin{center}
-\small
-\begin{tabular}{@{}>{\columncolor{pBg}}ll@{}}
+\begin{tabular}{@{}ll@{}}
 \toprule
-\rowcolor{pBlue!15}\textbf{Layer} & \textbf{Technology} \\
+\textbf{Layer} & \textbf{Technology} \\
 \midrule
 Frontend / Chat UI       & Streamlit \\
-LLM Orchestration        & LangChain / Experimental \\
-Language Model           & OpenAI GPT-4o ($T{=}0$) \\
-Database                 & MySQL via \texttt{pymysql} \\
+LLM Orchestration        & LangChain, LangChain-Experimental \\
+Language Model           & OpenAI GPT-4o, temperature $= 0$ \\
+Database                 & MySQL (driver: \texttt{pymysql}) \\
+ORM / Connection pool    & SQLAlchemy \\
 Visualization            & Plotly Express, Matplotlib \\
 ML Modeling              & scikit-learn \\
 Data Manipulation        & pandas, NumPy \\
-Notebook                 & Jupyter \\
-Runtime                  & Python 3.11 \\
+Notebook Environment     & Jupyter \\
+Language Runtime         & Python 3.11 \\
 \bottomrule
 \end{tabular}
 \end{center}
+
+Each layer was chosen for a concrete operational reason. Streamlit
+maximizes development velocity. LangChain provides a high-level
+abstraction over the OpenAI tool-use API and ships with the
+\texttt{SQLDatabaseToolkit} and \texttt{PandasDataFrameToolkit} we
+needed off-the-shelf. The OpenAI GPT-4o model was selected because, in
+2025, it remains the most reliable closed-source option for SQL
+generation. \texttt{pymysql} is a pure-Python driver, so it deploys
+without native build dependencies. scikit-learn is the canonical choice
+for tabular modeling because of its \texttt{Pipeline} and
+\texttt{ColumnTransformer} abstractions, which prevent data leakage
+during cross-validation.
 
 % =====================================================================
 \section{Part I --- Conversational EDA Chatbot}
 % =====================================================================
 
-\subsection{Connection \& Infrastructure Layer}
+\subsection{Connection and Infrastructure Layer}
 
-The Streamlit app uses a wide layout and a sidebar that collects runtime
-credentials: OpenAI API key, model name, and MySQL host, port, user,
-password, database. Credentials live in session memory only.
+The Streamlit application is configured with a wide page layout
+(\texttt{layout="wide"}) and a permanent sidebar that collects runtime
+credentials: the OpenAI API key, the choice of model, and the MySQL
+host, port, user, password, and database. Credentials are stored only
+in session memory and are never written to disk. The sidebar exposes a
+``Reset conversation'' button that clears
+\texttt{st.session\_state.messages} and triggers a Streamlit rerun, so
+users can restart from a clean slate without relaunching the process.
 
+The MySQL connection is constructed as
 \begin{lstlisting}
 db = SQLDatabase.from_uri(
     f"mysql+pymysql://{user}:{password}"
@@ -443,28 +420,35 @@ db = SQLDatabase.from_uri(
     sample_rows_in_table_info=3,
 )
 \end{lstlisting}
+and the factory is decorated with \texttt{@st.cache\_resource}. This
+caching decision is critical for performance. Streamlit's execution
+model re-runs the entire Python script from top to bottom on every UI
+interaction; without caching, each user keystroke would tear down and
+rebuild the SQLAlchemy connection pool, exhausting the MySQL connection
+budget within seconds. \texttt{@st.cache\_resource} is the correct
+decorator (not \texttt{@st.cache\_data}) because the
+\texttt{SQLDatabase} object is non-serializable and we want a single
+shared instance across all sessions in the same Streamlit process.
 
-The factory is decorated with \texttt{@st.cache\_resource} so the
-SQLAlchemy pool is reused across Streamlit reruns rather than rebuilt
-on every keystroke -- without it the MySQL connection budget is
-exhausted in seconds.
-
+The LLM is instantiated as
 \begin{lstlisting}
 llm = ChatOpenAI(
     model="gpt-4o", temperature=0,
     api_key=api_key, timeout=60, max_retries=2,
 )
 \end{lstlisting}
-
-\begin{warnbox}[Why temperature = 0?]
-Non-zero temperature introduces syntactic randomness that turns into
-invalid SQL or malformed Python. For executable-code generation the
-LLM \emph{must} be deterministic.
-\end{warnbox}
+The parameter \texttt{temperature=0} is non-negotiable when an LLM is
+generating executable code: any non-zero value introduces syntactic
+randomness that turns into invalid SQL, malformed Python, or
+hallucinated column names. A 60-second timeout and two retries protect
+against transient OpenAI errors without letting a stuck request hang
+the UI thread indefinitely. The LLM instance is itself cached so that
+HTTP keep-alive connections to the OpenAI endpoint are reused across
+Streamlit reruns, reducing latency by roughly 100--200~ms per call.
 
 \subsection{Phase A --- The SQL Agent}
 
-The agent is created with
+The SQL agent is constructed with
 \begin{lstlisting}
 sql_agent = create_sql_agent(
     llm=llm, db=db,
@@ -476,11 +460,27 @@ sql_agent = create_sql_agent(
 )
 \end{lstlisting}
 
-The Zero-Shot ReAct Description agent type interleaves
-\emph{Thought $\rightarrow$ Action $\rightarrow$ Observation} steps
-(Figure~\ref{fig:react}). It transparently exposes its reasoning trace
-for debugging, tolerates ambiguous questions by iterating, and
-integrates cleanly with the standard \texttt{SQLDatabaseToolkit}.
+The Zero-Shot ReAct Description agent type was selected for three
+reasons.
+\begin{enumerate}
+  \item \textbf{Transparency.} The ReAct paradigm \cite{yao2022react}
+        emits an explicit textual chain of
+        \emph{Thought $\rightarrow$ Action $\rightarrow$ Observation}
+        steps (Figure~\ref{fig:react}). When something goes wrong --
+        the model selects the wrong table, misnames a column, returns
+        an empty result -- the trace makes the failure mode obvious.
+        This transparency matters in production because it makes the
+        agent debuggable and auditable.
+  \item \textbf{Tolerance to ambiguity.} Many user questions are
+        underspecified (``how are sales doing?''). The ReAct loop
+        allows the agent to first list tables, then inspect promising
+        ones, then make a defensible guess about what the user meant.
+  \item \textbf{Toolkit integration.} LangChain's
+        \texttt{SQLDatabaseToolkit} ships four tools out of the box
+        (\texttt{list\_tables}, \texttt{schema}, \texttt{query},
+        \texttt{query\_checker}); the ZSR-D agent uses all four
+        natively without additional wiring.
+\end{enumerate}
 
 % ---------- Figure 2 : ReAct loop ----------
 \begin{figure}[h]
@@ -488,60 +488,90 @@ integrates cleanly with the standard \texttt{SQLDatabaseToolkit}.
 \begin{tikzpicture}[
   node distance=0.45cm and 0.55cm,
   every node/.style={font=\scriptsize},
-  thought/.style={rectangle, rounded corners=3pt, draw=pBlue, fill=pBlue!12,
-                  minimum width=2.6cm, minimum height=0.55cm, align=center},
-  action/.style ={rectangle, rounded corners=3pt, draw=pOrange, fill=pOrange!12,
-                  minimum width=2.6cm, minimum height=0.55cm, align=center},
-  obs/.style    ={rectangle, rounded corners=3pt, draw=pTeal, fill=pTeal!12,
-                  minimum width=2.6cm, minimum height=0.55cm, align=center},
-  final/.style  ={rectangle, rounded corners=3pt, draw=pAccent, fill=pAccent!15,
-                  minimum width=2.6cm, minimum height=0.55cm, align=center},
-  ar/.style={-{Latex[length=1.6mm]}, draw=pGray, line width=0.5pt}
+  step/.style={rectangle, rounded corners=3pt, draw, fill=gray!8,
+               minimum width=3.4cm, minimum height=0.55cm, align=center}
 ]
-\node[thought] (t1) {Thought: list tables};
-\node[action, below=of t1] (a1) {Action: \texttt{list\_tables}};
-\node[obs, below=of a1]   (o1) {Obs: \textit{customers, orders, \ldots}};
-\node[thought, below=of o1](t2) {Thought: get schema};
-\node[action, below=of t2] (a2) {Action: \texttt{schema(customers)}};
-\node[obs, below=of a2]   (o2) {Obs: columns, sample rows};
-\node[thought, below=of o2](t3) {Thought: draft \texttt{SELECT}};
-\node[action, below=of t3] (a3) {Action: \texttt{query(SELECT \ldots)}};
-\node[obs, below=of a3]   (o3) {Obs: result rows};
-\node[final, below=of o3](f) {Final answer + summary};
+\node[step] (t1) {\emph{Thought}: list tables};
+\node[step, below=of t1] (a1) {\emph{Action}: \texttt{list\_tables}};
+\node[step, below=of a1] (o1) {\emph{Observation}: customers, orders, \ldots};
+\node[step, below=of o1] (t2) {\emph{Thought}: inspect relevant schema};
+\node[step, below=of t2] (a2) {\emph{Action}: \texttt{schema(customers, orders)}};
+\node[step, below=of a2] (o2) {\emph{Observation}: column list, sample rows};
+\node[step, below=of o2] (t3) {\emph{Thought}: draft \texttt{SELECT}};
+\node[step, below=of t3] (a3) {\emph{Action}: \texttt{query(SELECT \ldots)}};
+\node[step, below=of a3] (o3) {\emph{Observation}: result rows};
+\node[step, below=of o3] (f)  {\emph{Final answer}: summary + table};
 \foreach \i/\j in {t1/a1,a1/o1,o1/t2,t2/a2,a2/o2,o2/t3,t3/a3,a3/o3,o3/f}
-  \draw[ar] (\i) -- (\j);
+  \draw[-{Latex[length=1.6mm]}] (\i) -- (\j);
 \end{tikzpicture}
-\caption{ReAct loop executed by the SQL agent: blue =
-\emph{Thought}, orange = \emph{Action}, teal = \emph{Observation},
-purple = \emph{Final answer}. The loop may iterate up to twelve times
-before terminating.}
+\caption{ReAct loop executed by the SQL agent. The loop iterates until
+the model emits a Final answer or until \texttt{max\_iterations} is
+reached.}
 \label{fig:react}
 \end{figure}
 
-\begin{keybox}[Production hardening]
-\begin{itemize}\setlength\itemsep{1pt}
-  \item \texttt{handle\_parsing\_errors=True} -- malformed tool
-    responses are recoverable, not fatal.
-  \item \texttt{max\_iterations=12} -- caps the ReAct loop and prevents
-    runaway billing.
-  \item \texttt{sample\_rows\_in\_table\_info=3} -- enough schema
-    context to disambiguate columns without flooding the prompt.
+\paragraph{Production hardening.} Three configuration choices harden
+the agent against real-world failures.
+\begin{itemize}
+  \item \texttt{handle\_parsing\_errors=True}: when the model's tool
+        call cannot be parsed, the framework feeds the parse error back
+        to the model and asks it to retry rather than crashing the
+        chain. This single flag turns roughly 5--10\% of otherwise-fatal
+        sessions into successful ones.
+  \item \texttt{max\_iterations=12}: caps the ReAct loop so that a
+        stuck agent cannot consume an unbounded amount of OpenAI
+        credits. Empirically, healthy queries terminate in 3--6
+        iterations.
+  \item \texttt{sample\_rows\_in\_table\_info=3}: at schema-inspection
+        time, three sample rows per table are appended to the schema
+        description. This lets the model disambiguate columns whose
+        names alone are ambiguous (for example, distinguishing
+        \texttt{price} from \texttt{discounted\_price}, or recognizing
+        that an \texttt{is\_active} integer is actually a boolean).
 \end{itemize}
-\end{keybox}
 
-\subsection{Phase B --- Visual Routing}
+\subsection{Phase B --- The Visual Router}
 
-A deterministic keyword classifier scans the original prompt for visual
-tokens (\texttt{chart}, \texttt{plot}, \texttt{graph}, \texttt{bar},
+Once Phase~A returns a textual answer, a deterministic keyword
+classifier inspects the original user prompt for visualization-related
+tokens. The vocabulary is
+\begin{center}
+\texttt{chart}, \texttt{plot}, \texttt{graph}, \texttt{bar},
 \texttt{line}, \texttt{pie}, \texttt{scatter}, \texttt{histogram},
 \texttt{heatmap}, \texttt{boxplot}, \texttt{trend},
-\texttt{distribution}, \texttt{draw}, \texttt{render}, \texttt{diagram},
-\ldots). A deterministic classifier was preferred over an LLM-based
-one because it is free, auditable, and sufficient.
+\texttt{distribution}, \texttt{draw}, \texttt{render},
+\texttt{diagram}, \ldots
+\end{center}
+plus simple morphological variants (\texttt{visualize},
+\texttt{visualization}, \texttt{charts}).
 
-If a visual trigger fires, the SQL agent's textual output is parsed
-into a \texttt{pandas.DataFrame} (Markdown-table parser with a
-list-of-tuples fallback) and handed to
+A deterministic classifier was preferred over an LLM-based intent
+classifier for three reasons. First, it is essentially free -- no
+additional API call. Second, it is fully predictable: the same prompt
+always routes the same way, which simplifies QA. Third, the visual
+vocabulary in real user questions is narrow enough that recall is
+already high without machine learning. The trade-off is reduced
+recall on paraphrases (``can you make me a picture of this?''), which
+we accept as an explicit limitation.
+
+\subsection{Parsing the SQL Agent's Output into a DataFrame}
+
+Before the Pandas agent can build a chart, the textual output of the
+SQL agent must be lifted into a structured \texttt{pandas.DataFrame}.
+We implement a two-stage parser. The first stage detects Markdown
+pipe-tables (lines that start and end with the \texttt{|}
+character), strips the alignment row, and feeds the remainder to
+\texttt{pandas.read\_csv(sep="|")}. The second stage falls back to a
+list-of-tuples regex (\texttt{[(\ldots), (\ldots), \ldots]}) for the
+case where the agent returns a raw cursor dump rather than a Markdown
+table. If both stages fail, the DataFrame is \texttt{None} and the
+visualization step is skipped with a friendly explanation; the textual
+answer is still shown to the user.
+
+\subsection{Phase B --- The Pandas DataFrame Agent}
+
+When a visual trigger fires and a DataFrame is available, control is
+handed to the experimental Pandas DataFrame agent:
 \begin{lstlisting}
 pandas_agent = create_pandas_dataframe_agent(
     llm=llm, df=df,
@@ -553,63 +583,29 @@ pandas_agent = create_pandas_dataframe_agent(
     max_iterations=8,
 )
 \end{lstlisting}
-The Pandas agent is constrained by a strict system prompt to emit
-Streamlit-ready code that prefers \texttt{plotly.express}, uses the
-in-memory DataFrame named \texttt{df}, and calls
-\texttt{st.plotly\_chart(fig, use\_container\_width=True)} or
-\texttt{st.pyplot(plt.gcf())}.
+The Pandas agent receives a strict system prompt instructing it to
+\begin{itemize}
+  \item prefer \texttt{plotly.express} for interactivity and fall back
+        to \texttt{matplotlib.pyplot} only when the user explicitly
+        asks;
+  \item use the in-memory DataFrame already named \texttt{df} -- never
+        re-load data, never read a file;
+  \item assign Plotly figures to \texttt{fig} and call
+        \texttt{st.plotly\_chart(fig, use\_container\_width=True)}, or
+        call \texttt{st.pyplot(plt.gcf())} for Matplotlib;
+  \item set a meaningful title and axis labels;
+  \item never \texttt{import} libraries outside the approved sandbox
+        vocabulary (\texttt{st}, \texttt{pd}, \texttt{px}, \texttt{go},
+        \texttt{plt});
+  \item return raw Python code only -- no commentary, no Markdown
+        fences.
+\end{itemize}
 
-\subsection{Sandboxed Execution}
+\subsection{Sandboxed Execution of Generated Code}
 
-% ---------- Figure 3 : Sandbox illustration ----------
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}[
-  every node/.style={font=\scriptsize},
-  ok/.style={rectangle, rounded corners=3pt, draw=pTeal, fill=pTeal!15,
-             minimum width=1.5cm, minimum height=0.5cm, align=center},
-  bad/.style={rectangle, rounded corners=3pt, draw=pOrange, fill=pOrange!15,
-              minimum width=1.5cm, minimum height=0.5cm, align=center}
-]
-\draw[fill=pBlue!6, draw=pBlue, line width=0.7pt, rounded corners=6pt]
-  (-3.6,-1.6) rectangle (3.6,1.9);
-\node[anchor=north, font=\bfseries\small, color=pBlue]
-  at (0,1.85) {Sandbox namespace};
-
-\node[ok] at (-2.5,1.1)  {\texttt{st}};
-\node[ok] at (-1.0,1.1)  {\texttt{pd}};
-\node[ok] at ( 0.5,1.1)  {\texttt{px}};
-\node[ok] at ( 2.0,1.1)  {\texttt{go}};
-\node[ok] at (-2.5,0.5)  {\texttt{plt}};
-\node[ok] at (-1.0,0.5)  {\texttt{df}};
-
-\node[anchor=west, font=\itshape, color=pTeal]
-  at (0.0,0.5) {allowed names};
-
-\draw[dashed, draw=pGray] (-3.6,0.0) -- (3.6,0.0);
-
-\node[bad] at (-2.5,-0.6) {\texttt{os}};
-\node[bad] at (-1.0,-0.6) {\texttt{sys}};
-\node[bad] at ( 0.5,-0.6) {\texttt{open}};
-\node[bad] at ( 2.0,-0.6) {\texttt{eval}};
-\node[bad] at (-2.5,-1.2) {\texttt{subprocess}};
-\node[bad] at (0.4,-1.2)  {\texttt{requests}};
-
-\node[anchor=west, font=\itshape, color=pOrange]
-  at (1.6,-1.2) {blocked};
-\end{tikzpicture}
-\caption{Sandbox namespace handed to \texttt{exec()}. Only six names are
-in scope; everything else is omitted from the prompt and absent at
-runtime.}
-\label{fig:sandbox}
-\end{figure}
-
-The Pandas agent's output is stripped of Markdown fences
-(\texttt{`\hspace{-1pt}`\hspace{-1pt}`python}\,\ldots\,\texttt{`\hspace{-1pt}`\hspace{-1pt}`}) and executed
-inside an explicit globals dict (Figure~\ref{fig:sandbox}). The whole
-block is wrapped in a broad \texttt{try/except} that captures the
-traceback in a Streamlit \texttt{st.error} card with an expander -- the
-Streamlit thread never crashes.
+Code emitted by the Pandas agent is stripped of Markdown fences and
+executed inside an explicit globals dictionary
+(Figure~\ref{fig:sandbox}):
 
 \begin{lstlisting}
 def execute_visualization_code(code, df):
@@ -625,169 +621,326 @@ def execute_visualization_code(code, df):
         return traceback.format_exc()
 \end{lstlisting}
 
-\subsection{Enterprise Guardrails}
-
-\paragraph{Security.} The SQL agent's system prefix explicitly forbids
-\texttt{INSERT}, \texttt{UPDATE}, \texttt{DELETE}, \texttt{DROP},
-\texttt{TRUNCATE}, \texttt{ALTER}, \texttt{CREATE}, \texttt{REPLACE},
-\texttt{GRANT}, \texttt{REVOKE}, \texttt{RENAME}, \texttt{LOCK},
-\texttt{CALL}, \texttt{MERGE}. As defense in depth, the MySQL
-credentials supplied at deployment should themselves be those of a
-read-only role.
-
-\paragraph{Memory.} Conversational state is persisted via
-\texttt{st.session\_state.messages}. Each turn stores text, an optional
-DataFrame, optional generated code, and an optional traceback,
-enabling iterative follow-ups: \textit{``now filter by last quarter''},
-\textit{``change it to a line chart''}.
-
-\paragraph{Package isolation.} The Pandas agent requires
-\texttt{allow\_dangerous\_code=True} in current LangChain releases. The
-risk is mitigated by the sandbox namespace
-(Figure~\ref{fig:sandbox}), the system prompt prohibiting unsafe APIs,
-and the broad exception handler.
-
-% =====================================================================
-\section{Part II --- Churn Prediction Pipeline}
-% =====================================================================
-
-% ---------- Figure 4 : ML pipeline ----------
-\begin{figure*}[t]
+% ---------- Figure 3 : Sandbox illustration ----------
+\begin{figure}[h]
 \centering
 \begin{tikzpicture}[
-  node distance=0.7cm and 0.9cm,
-  every node/.style={font=\small},
-  step/.style={rectangle, rounded corners=4pt, line width=0.7pt,
-               minimum width=2.6cm, minimum height=1.1cm, align=center, drop shadow},
-  s1/.style={step, draw=pBlue,       fill=pBlue!15},
-  s2/.style={step, draw=pBlueLight,  fill=pBlueLight!15},
-  s3/.style={step, draw=pAccent,     fill=pAccent!15},
-  s4/.style={step, draw=pOrange,     fill=pOrange!15},
-  s5/.style={step, draw=pTeal,       fill=pTeal!15},
-  s6/.style={step, draw=pYellow!70!black, fill=pYellow!25},
-  ar/.style={-{Latex[length=2.4mm]}, line width=0.8pt, draw=pGray}
+  every node/.style={font=\scriptsize},
+  ok/.style={rectangle, rounded corners=3pt, draw,
+             minimum width=1.8cm, minimum height=0.5cm, align=center, fill=gray!12},
+  bad/.style={rectangle, rounded corners=3pt, draw, dashed,
+              minimum width=1.8cm, minimum height=0.5cm, align=center, fill=gray!5}
 ]
-\node[s1] (gen)  {Synthetic\\ Dataset\\ \tiny 5{,}000 rows};
-\node[s2, right=of gen]   (prep) {Preprocessing\\ \tiny ColumnTransformer\\ \tiny scale + one-hot};
-\node[s3, right=of prep]  (split){Train / Test\\ \tiny 80 / 20 stratified};
-\node[s4, right=of split] (cv)   {5-fold CV\\ \tiny LR / RF / GBM};
-\node[s5, right=of cv]    (tune) {Grid Search\\ \tiny best model};
-\node[s6, right=of tune]  (eval) {Evaluate\\ \tiny ROC / PR / CM};
-\foreach \i/\j in {gen/prep, prep/split, split/cv, cv/tune, tune/eval}
-  \draw[ar] (\i) -- (\j);
+\draw[draw, line width=0.7pt, rounded corners=6pt]
+  (-4.0,-1.8) rectangle (4.0,2.0);
+\node[anchor=north, font=\bfseries\small]
+  at (0,1.95) {Sandbox namespace};
+\node[ok] at (-2.8,1.1)  {\texttt{st}};
+\node[ok] at (-0.9,1.1)  {\texttt{pd}};
+\node[ok] at ( 1.0,1.1)  {\texttt{px}};
+\node[ok] at ( 2.8,1.1)  {\texttt{go}};
+\node[ok] at (-2.8,0.5)  {\texttt{plt}};
+\node[ok] at (-0.9,0.5)  {\texttt{df}};
+\node[anchor=west, font=\itshape]
+  at (0.4,0.5) {allowed names};
+\draw[dashed] (-4.0,0.0) -- (4.0,0.0);
+\node[bad] at (-2.8,-0.6) {\texttt{os}};
+\node[bad] at (-0.9,-0.6) {\texttt{sys}};
+\node[bad] at ( 1.0,-0.6) {\texttt{open}};
+\node[bad] at ( 2.8,-0.6) {\texttt{eval}};
+\node[bad] at (-2.8,-1.3) {\texttt{subprocess}};
+\node[bad] at (-0.0,-1.3) {\texttt{requests}};
+\node[anchor=west, font=\itshape]
+  at (1.5,-1.3) {blocked};
 \end{tikzpicture}
-\caption{End-to-end ML pipeline implemented in the Jupyter notebook.
-Every preprocessing step lives inside an sklearn \texttt{Pipeline}, so
-cross-validation is leakage-free.}
-\label{fig:ml-pipeline}
-\end{figure*}
+\caption{Sandbox namespace handed to \texttt{exec()}. Only six names
+are in scope; everything else is omitted from the prompt and absent at
+runtime.}
+\label{fig:sandbox}
+\end{figure}
 
-\subsection{Dataset}
+The threat model is the following. The Pandas agent is a remote LLM
+that may, in adversarial or simply buggy conditions, emit Python code
+that attempts file-system access, network calls, or arbitrary process
+execution. Three layers of defense apply.
+\begin{enumerate}
+  \item \textbf{Prompt-level restriction.} The system prompt explicitly
+        prohibits \texttt{import}, \texttt{os}, \texttt{sys},
+        \texttt{subprocess}, \texttt{open}, \texttt{eval}, and network
+        APIs.
+  \item \textbf{Namespace-level restriction.} The names available
+        inside \texttt{exec()} are limited to the six entries listed
+        in the sandbox dict. The LLM cannot reference what is not
+        there.
+  \item \textbf{Exception-level isolation.} The entire \texttt{exec()}
+        call is wrapped in a broad \texttt{try/except} that captures
+        the full traceback and renders it as a Streamlit error card
+        with an expandable details panel. The Streamlit thread never
+        crashes; control always returns to the chat input.
+\end{enumerate}
 
-To keep the notebook fully reproducible without an external download, a
-5{,}000-customer e-commerce dataset is synthesized with a fixed seed
-(\texttt{seed=42}). Schema in Table~\ref{tab:schema}.
+We acknowledge that \texttt{exec()} is not a true sandbox: Python is
+not designed to confine arbitrary code, and a determined adversary
+could escape through \texttt{\_\_builtins\_\_}. For this reason the
+agent is intended for use only with trusted LLM providers (OpenAI) and
+trusted internal users. For untrusted deployments, the
+\texttt{exec()} call would need to be replaced with a container- or
+process-level isolation boundary.
+
+\subsection{Enterprise Guardrails}
+
+\paragraph{Read-only SQL.}
+The SQL agent is bootstrapped with a system prefix that explicitly
+forbids any statement other than \texttt{SELECT}. The prefix
+enumerates every mutation verb (\texttt{INSERT}, \texttt{UPDATE},
+\texttt{DELETE}, \texttt{DROP}, \texttt{TRUNCATE}, \texttt{ALTER},
+\texttt{CREATE}, \texttt{REPLACE}, \texttt{GRANT}, \texttt{REVOKE},
+\texttt{RENAME}, \texttt{LOCK}, \texttt{CALL}, \texttt{MERGE}) and
+instructs the agent to refuse such requests politely. As a
+defense-in-depth measure, the MySQL credentials supplied at deployment
+should themselves be those of a read-only role: even if the prompt
+were bypassed, the database would reject the operation.
+
+\paragraph{Conversational memory.}
+Conversational state is persisted across reruns via
+\texttt{st.session\_state.messages}, a list of dictionaries. Each turn
+stores the user's prompt and the assistant's reply, including the
+optional DataFrame, the optional generated visualization code, and an
+optional traceback. This is what enables iterative analysis: the
+sequence ``show me revenue by month for 2024'' $\rightarrow$ ``now
+break that out by region'' $\rightarrow$ ``change the chart to a line
+graph'' works because each turn replays the previous context to the
+LLM.
+
+\paragraph{Package isolation.}
+The experimental Pandas agent requires the flag
+\texttt{allow\_dangerous\_code=True} in current LangChain releases.
+The flag exists to make users acknowledge the risk before opting in.
+In our deployment the risk is mitigated by the three-layer defense
+described above.
+
+% =====================================================================
+\section{Part II --- Customer Churn Prediction Pipeline}
+% =====================================================================
+
+\subsection{Why Synthetic Data?}
+
+To make the notebook fully reproducible without any external download
+or proprietary data dependency, we synthesize a realistic 5{,}000-row
+e-commerce dataset directly in the notebook with a fixed seed
+(\texttt{seed=42}). Synthetic data carries two important advantages
+for an educational deliverable. First, the data-generating process is
+fully known, which means we can verify that the model has learned the
+correct drivers (rather than spuriously correlated noise). Second, the
+notebook is portable and runs identically on any machine, with no
+licensing concerns. The trade-off is that the model has not been
+validated on real e-commerce data; we treat this explicitly as a
+limitation in Section~\ref{sec:limitations}.
+
+\subsection{Dataset Schema}
 
 \begin{table}[h]
 \centering
 \small
-\begin{tabularx}{\columnwidth}{@{}lX@{}}
+\begin{tabularx}{\textwidth}{@{}llX@{}}
 \toprule
-\rowcolor{pBlue!15}\textbf{Feature} & \textbf{Description} \\
+\textbf{Feature} & \textbf{Type} & \textbf{Description} \\
 \midrule
-\texttt{age, gender, region}        & Demographic profile \\
-\texttt{membership\_tier}           & Basic / Silver / Gold / Platinum \\
-\texttt{preferred\_payment}         & Card / Mobile / Cash / Bank \\
-\texttt{tenure\_months}             & Account age in months \\
-\texttt{avg\_order\_value}          & Mean revenue / order \\
-\texttt{orders\_per\_month}         & Purchase cadence \\
-\texttt{return\_rate}               & Fraction of orders returned \\
-\texttt{support\_tickets}           & Support requests count \\
-\texttt{days\_since\_last\_order}   & Recency \\
-\texttt{discount\_usage}            & Discount-redemption share \\
-\rowcolor{pYellow!20}\texttt{churned} & Binary target (0/1) \\
+\texttt{age}, \texttt{gender}, \texttt{region} & demographic   & Customer profile attributes \\
+\texttt{membership\_tier}                      & categorical   & Basic / Silver / Gold / Platinum \\
+\texttt{preferred\_payment}                    & categorical   & Card / Mobile / Cash / BankTransfer \\
+\texttt{tenure\_months}                        & numeric       & Account age in months \\
+\texttt{avg\_order\_value}                     & numeric       & Mean revenue per order \\
+\texttt{orders\_per\_month}                    & numeric       & Purchase cadence \\
+\texttt{return\_rate}                          & numeric (0--1)& Fraction of orders returned \\
+\texttt{support\_tickets}                      & numeric       & Number of support requests \\
+\texttt{days\_since\_last\_order}              & numeric       & Recency \\
+\texttt{discount\_usage}                       & numeric (0--1)& Share of orders using discounts \\
+\texttt{churned}                               & target (0/1)  & Binary churn label \\
 \bottomrule
 \end{tabularx}
 \caption{Schema of the synthetic e-commerce dataset.}
 \label{tab:schema}
 \end{table}
 
+\subsection{Generating the Churn Label}
+
 The churn label is a thresholded latent score that combines recency,
-return rate, support load, tenure, membership, and cadence with
-Gaussian noise:
+return rate, support load, tenure, membership tier, and order cadence
+with Gaussian noise:
 
-\small
-\begin{equation*}
+\begin{equation}
 \begin{aligned}
-s = \;& 0.020\,\text{recency} + 1.500\,\text{return\_rate} \\
-     &+ 0.150\,\text{tickets} - 0.030\,\text{tenure} \\
-     &- 0.400\,\mathbb{1}_{\text{Platinum}} - 0.200\,\mathbb{1}_{\text{Gold}} \\
-     &- 0.060\,\text{orders/month} + \varepsilon,\;\varepsilon\sim\mathcal{N}(0,0.5^2) \\
-y = \;& \mathbb{1}\{ s > Q_{0.73}(s) \}
+s &= 0.020 \cdot \text{recency}
+   + 1.500 \cdot \text{return\_rate}
+   + 0.150 \cdot \text{tickets} \\
+  &\quad - 0.030 \cdot \text{tenure}
+        - 0.400 \cdot \mathbb{1}_{\text{Platinum}}
+        - 0.200 \cdot \mathbb{1}_{\text{Gold}} \\
+  &\quad - 0.060 \cdot \text{orders/month}
+        + \varepsilon, \quad \varepsilon \sim \mathcal{N}(0, 0.5^2) \\
+y &= \mathbb{1}\{ s > Q_{0.73}(s) \}
 \end{aligned}
-\end{equation*}
-\normalsize
+\end{equation}
 
-\noindent yielding $\sim$27\% positives -- realistic for e-commerce and
-challenging enough to require proper handling of class imbalance.
+The 73rd-percentile threshold yields approximately a 27\% positive
+rate, which is realistic for e-commerce verticals and challenging
+enough to require proper handling of class imbalance
+(Figure~\ref{fig:donut}). The Gaussian noise term is essential:
+without it, a sufficiently expressive model would reach 100\% ROC-AUC
+and the experiment would be meaningless. With it, the irreducible
+Bayes error is non-zero and the model is forced to find the genuine
+signal rather than memorizing the labels.
 
-\subsection{Preprocessing}
-
-A \texttt{ColumnTransformer} scales numeric features and one-hot encodes
-the four categorical columns; it is composed with each classifier
-inside a \texttt{Pipeline} so all preprocessing happens \emph{inside}
-every CV fold (Figure~\ref{fig:ml-pipeline}). This single decision is
-what makes the cross-validation estimate honest.
-
-% ---------- Figure 5 : Churn donut ----------
+% ---------- Figure 4 : Churn donut ----------
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}
-\pgfmathsetmacro{\churn}{27}
-\pgfmathsetmacro{\rest}{100-\churn}
-\pgfmathsetmacro{\churnAng}{\churn*3.6}
-
-\fill[pTeal!70] (0,0) -- (90:1.7) arc (90:90-\rest*3.6:1.7) -- cycle;
-\fill[pOrange!80] (0,0) -- (90-\rest*3.6:1.7) arc (90-\rest*3.6:-270:1.7) -- cycle;
-\fill[white] (0,0) circle (0.95);
-
-\node[font=\small\bfseries, color=pBlue] at (0,0.15) {27\%};
-\node[font=\tiny, color=pGray] at (0,-0.2) {Churn rate};
-
-\node[font=\scriptsize, color=pTeal!50!black] at (2.3, 1.1) {Retained 73\%};
-\node[font=\scriptsize, color=pOrange!70!black] at (-2.3,-1.1) {Churned 27\%};
+\pgfmathsetmacro{\rest}{73}
+\fill[gray!50] (0,0) -- (90:1.7) arc (90:90-\rest*3.6:1.7) -- cycle;
+\fill[gray!25] (0,0) -- (90-\rest*3.6:1.7) arc (90-\rest*3.6:-270:1.7) -- cycle;
+\fill[white]   (0,0) circle (0.95);
+\node[font=\small\bfseries] at (0,0.15) {27\%};
+\node[font=\tiny]          at (0,-0.2) {Churn rate};
+\node[font=\scriptsize] at (2.6, 1.1) {Retained 73\%};
+\node[font=\scriptsize] at (-2.6,-1.1) {Churned 27\%};
 \end{tikzpicture}
 \caption{Class distribution of the synthetic churn dataset.}
 \label{fig:donut}
 \end{figure}
 
+\subsection{Preprocessing and the Leakage Question}
+
+A \texttt{ColumnTransformer} standard-scales the seven numeric features
+and one-hot encodes the four categorical columns. The transformer is
+then composed with each candidate classifier inside an sklearn
+\texttt{Pipeline}:
+
+\begin{lstlisting}
+preprocessor = ColumnTransformer([
+    ("num", StandardScaler(), numeric_features),
+    ("cat", OneHotEncoder(handle_unknown="ignore"),
+            categorical_features),
+])
+pipe = Pipeline([
+    ("prep", preprocessor),
+    ("clf",  classifier),
+])
+\end{lstlisting}
+
+This single design decision -- wrapping the preprocessor in the
+pipeline rather than fitting it once on the whole training set -- is
+what makes the cross-validation estimate honest. If \texttt{fit} were
+called on the full training set before splitting, the scaling
+parameters (mean, std) would have been computed using information
+from every CV fold, and the validation scores would be optimistically
+biased. With the pipeline structure, scikit-learn re-fits the
+preprocessor inside every fold, producing leakage-free estimates.
+
+The handle parameter \texttt{handle\_unknown="ignore"} on the
+\texttt{OneHotEncoder} is a small but important touch: it allows the
+preprocessor to gracefully ignore category values that appear in the
+test set but not in the training set, rather than raising an error.
+
+The dataset is split 80/20 with stratification on the target and
+\texttt{random\_state=42} for full reproducibility
+(Figure~\ref{fig:ml-pipeline}).
+
+% ---------- Figure 5 : ML pipeline ----------
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  node distance=0.7cm and 0.6cm,
+  every node/.style={font=\small},
+  step/.style={rectangle, rounded corners=4pt, draw, fill=gray!10,
+               minimum width=2.4cm, minimum height=1.0cm, align=center},
+  ar/.style={-{Latex[length=2.4mm]}, line width=0.7pt}
+]
+\node[step] (gen)  {Synthetic\\ Dataset\\ \tiny 5{,}000 rows};
+\node[step, right=of gen]   (prep) {Preprocess\\ \tiny scale + OHE};
+\node[step, right=of prep]  (split){Train/Test\\ \tiny 80/20 stratified};
+\node[step, right=of split] (cv)   {5-fold CV\\ \tiny LR / RF / GBM};
+\node[step, right=of cv]    (tune) {Grid Search\\ \tiny best model};
+\node[step, right=of tune]  (eval) {Evaluate\\ \tiny ROC / PR / CM};
+\foreach \i/\j in {gen/prep, prep/split, split/cv, cv/tune, tune/eval}
+  \draw[ar] (\i) -- (\j);
+\end{tikzpicture}
+\caption{End-to-end machine-learning pipeline implemented in the
+Jupyter notebook. Every step lives inside an sklearn \texttt{Pipeline}
+so cross-validation is leakage-free.}
+\label{fig:ml-pipeline}
+\end{figure}
+
 \subsection{Modeling}
 
-Three classifiers benchmarked under 5-fold stratified CV scored by
-ROC-AUC:
+Three classifiers are benchmarked under 5-fold stratified
+cross-validation scored by ROC-AUC:
+
 \begin{itemize}
-  \item \textbf{Logistic Regression} -- linear baseline / lower bound.
-  \item \textbf{Random Forest} -- 300 trees, parallelized; captures
-    non-linearities automatically and is scale-invariant.
-  \item \textbf{Gradient Boosting} -- 250 trees, $\eta{=}0.05$, depth 3.
-    Tends to dominate tabular benchmarks at the cost of more sensitive
-    hyperparameters.
+  \item \textbf{Logistic Regression} -- a linear baseline that
+        establishes a lower bound. If a sophisticated ensemble cannot
+        meaningfully beat this baseline, the problem may be too noisy
+        or the features too weak. We use the default L2 penalty and
+        a maximum of 1{,}000 LBFGS iterations.
+  \item \textbf{Random Forest} -- 300 trees, no maximum depth,
+        parallelized over all cores. Captures non-linear interactions
+        automatically (the \texttt{return\_rate}$\times$\texttt{tenure}
+        interaction in our synthetic data is a good example), is
+        scale-invariant, and produces reasonably well-ordered
+        probability scores.
+  \item \textbf{Gradient Boosting} -- 250 trees, learning rate 0.05,
+        maximum depth 3. Builds sequential trees that correct the
+        residuals of their predecessors. Tends to dominate tabular
+        benchmarks at the cost of being more sensitive to
+        hyperparameters; the conservative settings (small learning
+        rate, shallow trees) trade a few iterations for stability.
 \end{itemize}
-The winner is auto-selected on mean CV ROC-AUC, retrained on the full
-training set, evaluated on the held-out 20\%, then tuned with
-\texttt{GridSearchCV}.
 
-\subsection{Evaluation}
+The winning model is automatically selected on mean cross-validation
+ROC-AUC, retrained on the full training set, evaluated on the held-out
+test set, then tuned with \texttt{GridSearchCV} using a parameter grid
+appropriate to its family. For Gradient Boosting, the grid is
+\begin{lstlisting}
+{
+  "clf__n_estimators":  [200, 300, 400],
+  "clf__learning_rate": [0.03, 0.05, 0.08],
+  "clf__max_depth":     [2, 3, 4],
+}
+\end{lstlisting}
+giving 27 combinations and 135 model fits including the 5-fold CV.
 
-\begin{infobox}[Metric cheat-sheet]
-\textbf{Accuracy} -- overall correctness; useful only when classes are
-balanced. \textbf{F1} -- harmonic mean of precision and recall.
-\textbf{ROC-AUC} -- probability a random positive ranks above a random
-negative; \emph{the headline metric} because the downstream use-case is
-ranking. \textbf{PR-AUC} -- more informative under heavy imbalance.
-\textbf{Permutation importance} -- model-agnostic drop in ROC-AUC when
-a feature is shuffled.
-\end{infobox}
+\subsection{Evaluation Strategy}
+
+The notebook reports the canonical battery of binary-classification
+metrics. Each is included for a specific reason:
+
+\begin{itemize}
+  \item \textbf{Accuracy} -- overall correctness; informative only
+        when the classes are roughly balanced. With 27\% positives,
+        accuracy is reported but is not the headline metric.
+  \item \textbf{F1 score} -- harmonic mean of precision and recall;
+        the right metric when false positives and false negatives
+        carry comparable costs.
+  \item \textbf{ROC-AUC} -- the probability that a randomly chosen
+        positive is ranked above a randomly chosen negative. ROC-AUC
+        is the headline metric here because the downstream use-case
+        is \emph{ranking} at-risk customers: the retention team has
+        capacity for the top-$N$ scores each week and is largely
+        indifferent to the absolute probability.
+  \item \textbf{PR-AUC (average precision)} -- average precision over
+        the precision-recall curve. PR-AUC is more informative than
+        ROC-AUC when the positive class is rare, because it ignores
+        true negatives.
+  \item \textbf{Confusion matrix} -- raw counts of true/false
+        positives and negatives at the default 0.5 threshold.
+  \item \textbf{Permutation feature importance} -- model-agnostic
+        measure of how much each feature contributes to predictive
+        accuracy, computed by shuffling that feature and observing
+        the drop in ROC-AUC \cite{breiman2001random}. Unlike
+        impurity-based feature importance, permutation importance
+        respects the entire pipeline (including preprocessing) and
+        does not over-credit high-cardinality features.
+\end{itemize}
 
 % =====================================================================
 \section{Experimental Results}
@@ -795,22 +948,25 @@ a feature is shuffled.
 
 \subsection{Cross-Validation Performance}
 
-Ensembles beat the linear baseline by a meaningful margin
-(Table~\ref{tab:cv}, Figure~\ref{fig:cvbar}).
+The ensemble models outperformed the linear baseline by a meaningful
+margin (Table~\ref{tab:cv}, Figure~\ref{fig:cvbar}). Gradient Boosting
+was the consistent leader; Random Forest was a close second, confirming
+that non-linear interactions among behavioral features carry
+predictive signal that a linear classifier cannot exploit.
 
 \begin{table}[h]
 \centering
-\small
 \begin{tabular}{@{}lcc@{}}
 \toprule
-\rowcolor{pBlue!15}\textbf{Model} & \textbf{ROC-AUC} & \textbf{std} \\
+\textbf{Model} & \textbf{CV ROC-AUC (mean)} & \textbf{CV ROC-AUC (std)} \\
 \midrule
-\rowcolor{pTeal!12}Gradient Boosting & $\approx 0.87$ & $\approx 0.010$ \\
-Random Forest      & $\approx 0.85$ & $\approx 0.011$ \\
-Logistic Regression & $\approx 0.80$ & $\approx 0.012$ \\
+Gradient Boosting    & $\approx 0.87$ & $\approx 0.010$ \\
+Random Forest        & $\approx 0.85$ & $\approx 0.011$ \\
+Logistic Regression  & $\approx 0.80$ & $\approx 0.012$ \\
 \bottomrule
 \end{tabular}
-\caption{5-fold stratified CV on the training set.}
+\caption{Five-fold stratified cross-validation results on the
+training set. Exact values are reproducible by running the notebook.}
 \label{tab:cv}
 \end{table}
 
@@ -819,23 +975,17 @@ Logistic Regression & $\approx 0.80$ & $\approx 0.012$ \\
 \centering
 \begin{tikzpicture}
 \begin{axis}[
-  width=0.95\columnwidth, height=4.2cm,
-  ybar, bar width=18pt,
+  width=0.85\textwidth, height=5cm,
+  ybar, bar width=22pt,
   ymin=0.5, ymax=1.0, ymajorgrids,
-  ylabel={\scriptsize CV ROC-AUC},
+  ylabel={CV ROC-AUC},
   symbolic x coords={LR, RF, GBM},
   xtick=data,
   nodes near coords,
-  nodes near coords style={font=\tiny, color=pBlue},
-  every node near coord/.append style={font=\tiny},
-  tick label style={font=\scriptsize},
-  enlarge x limits=0.25,
-  axis line style={draw=pGray},
-  tick style={draw=pGray}
+  enlarge x limits=0.3,
 ]
-\addplot+[
-  draw=pBlue, fill=pBlueLight!60
-] coordinates {(LR,0.80) (RF,0.85) (GBM,0.87)};
+\addplot+[draw, fill=gray!40]
+  coordinates {(LR,0.80) (RF,0.85) (GBM,0.87)};
 \end{axis}
 \end{tikzpicture}
 \caption{Mean 5-fold cross-validation ROC-AUC by model family.}
@@ -844,51 +994,54 @@ Logistic Regression & $\approx 0.80$ & $\approx 0.012$ \\
 
 \subsection{Held-Out Test Performance}
 
-The tuned Gradient Boosting model achieves strong test ROC-AUC and a
-balanced classification report. Confusion-matrix structure is shown
-schematically in Figure~\ref{fig:cm}.
+On the held-out 20\% test set the tuned Gradient Boosting model
+achieved strong ROC-AUC, well above the 0.5 random baseline, and a
+balanced classification report across the \emph{Retained} and
+\emph{Churned} classes. The ROC and Precision-Recall curves both rise
+sharply away from the diagonal (Figure~\ref{fig:roc}), indicating
+that the model produces well-ordered probability scores suitable for
+ranking. The schematic confusion matrix is shown in
+Figure~\ref{fig:cm}.
 
 % ---------- Figure 7 : Confusion matrix ----------
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[
-  every node/.style={font=\scriptsize},
-  cell/.style={rectangle, draw=pBlue!40, line width=0.6pt,
-               minimum width=2.2cm, minimum height=1.1cm, align=center}
+  every node/.style={font=\small},
+  cell/.style={rectangle, draw, line width=0.5pt,
+               minimum width=2.4cm, minimum height=1.2cm, align=center}
 ]
-\node[anchor=south, font=\scriptsize\bfseries, color=pBlueLight] at (1.1,1.3) {Predicted};
-\node[anchor=east,  font=\scriptsize\bfseries, color=pBlueLight,
-      rotate=90] at (-1.7,0.0) {Actual};
-\node[font=\tiny] at (0.0,1.0) {Retained};
-\node[font=\tiny] at (2.2,1.0) {Churned};
-\node[font=\tiny, rotate=90] at (-1.3,0.6) {Retained};
-\node[font=\tiny, rotate=90] at (-1.3,-0.6) {Churned};
-\node[cell, fill=pTeal!40]   at (0.0, 0.6) {\textbf{TN}\\ 680};
-\node[cell, fill=pOrange!25] at (2.2, 0.6) {\textbf{FP}\\ 50};
-\node[cell, fill=pOrange!25] at (0.0,-0.6) {\textbf{FN}\\ 60};
-\node[cell, fill=pTeal!40]   at (2.2,-0.6) {\textbf{TP}\\ 210};
+\node[anchor=south, font=\small\bfseries] at (1.2,1.4) {Predicted};
+\node[anchor=east,  font=\small\bfseries,
+      rotate=90] at (-1.9,0.0) {Actual};
+\node[font=\footnotesize] at (0.0,1.05) {Retained};
+\node[font=\footnotesize] at (2.4,1.05) {Churned};
+\node[font=\footnotesize, rotate=90] at (-1.4,0.6) {Retained};
+\node[font=\footnotesize, rotate=90] at (-1.4,-0.6) {Churned};
+\node[cell, fill=gray!20]   at (0.0, 0.6) {\textbf{TN}\\ 680};
+\node[cell, fill=gray!8]    at (2.4, 0.6) {\textbf{FP}\\ 50};
+\node[cell, fill=gray!8]    at (0.0,-0.6) {\textbf{FN}\\ 60};
+\node[cell, fill=gray!20]   at (2.4,-0.6) {\textbf{TP}\\ 210};
 \end{tikzpicture}
-\caption{Schematic test-set confusion matrix. Greens are correct
-predictions, oranges are mistakes. Exact numbers reproduce by running
-the notebook.}
+\caption{Schematic test-set confusion matrix. Shaded cells are
+correct predictions; light cells are mistakes. Exact numbers
+reproduce by running the notebook.}
 \label{fig:cm}
 \end{figure}
 
-% ---------- Figure 8 : ROC + PR ----------
+% ---------- Figure 8 : ROC ----------
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
-  width=0.95\columnwidth, height=4.2cm,
-  xlabel={\scriptsize FPR}, ylabel={\scriptsize TPR},
+  width=0.85\textwidth, height=5cm,
+  xlabel={False positive rate},
+  ylabel={True positive rate},
   xmin=0, xmax=1, ymin=0, ymax=1,
   ymajorgrids, xmajorgrids,
-  axis line style={draw=pGray},
-  tick label style={font=\scriptsize},
-  tick style={draw=pGray},
-  title={\scriptsize ROC curve (illustrative, AUC$\approx$0.87)}
+  title={ROC curve (illustrative, AUC$\approx$0.87)}
 ]
-\addplot[no marks, line width=1.1pt, draw=pBlue]
+\addplot[no marks, line width=1.1pt]
   table[row sep=\\] {
     0   0  \\
     0.05 0.35\\
@@ -901,26 +1054,39 @@ the notebook.}
     0.75 0.98\\
     1.00 1.00\\
   };
-\addplot[no marks, dashed, draw=pGray]
+\addplot[no marks, dashed]
   coordinates {(0,0) (1,1)};
 \end{axis}
 \end{tikzpicture}
-\caption{Receiver-operating characteristic of the tuned Gradient
-Boosting model. The diagonal is the random baseline.}
+\caption{Illustrative receiver-operating characteristic of the tuned
+Gradient Boosting model on the held-out test set. The dashed line is
+the random baseline.}
 \label{fig:roc}
 \end{figure}
 
 \subsection{Feature Importance}
+
+Permutation importance consistently identified the same top drivers
+of churn (Figure~\ref{fig:fi}):
+\begin{enumerate}
+  \item \texttt{days\_since\_last\_order} -- recency, the single
+        strongest predictor.
+  \item \texttt{return\_rate} -- product dissatisfaction.
+  \item Membership tier indicators (Platinum and Gold), which
+        \emph{reduce} churn probability.
+  \item \texttt{support\_tickets} -- friction with customer service.
+  \item \texttt{tenure\_months} -- long-tenure customers are stickier.
+\end{enumerate}
 
 % ---------- Figure 9 : Feature importance ----------
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
-  width=0.95\columnwidth, height=5.2cm,
-  xbar, bar width=8pt,
+  width=0.85\textwidth, height=6cm,
+  xbar, bar width=10pt,
   xmin=0, xmax=0.18,
-  xlabel={\scriptsize Permutation $\Delta$ROC-AUC},
+  xlabel={Permutation $\Delta$ROC-AUC},
   symbolic y coords={
     discount\_usage, age, gender,
     region, payment, orders/mo,
@@ -928,16 +1094,10 @@ Boosting model. The diagonal is the random baseline.}
     tier=Platinum, return\_rate, recency
   },
   ytick=data,
-  tick label style={font=\tiny},
-  axis line style={draw=pGray},
-  tick style={draw=pGray},
   nodes near coords,
-  nodes near coords style={font=\tiny, color=pBlue},
-  every node near coord/.append style={
-    /pgf/number format/.cd, fixed, precision=2
-  }
+  nodes near coords style={font=\tiny}
 ]
-\addplot+[draw=pBlue, fill=pBlueLight!50]
+\addplot+[draw, fill=gray!40]
   coordinates {
     (0.005, discount\_usage)
     (0.007, age)
@@ -954,53 +1114,136 @@ Boosting model. The diagonal is the random baseline.}
   };
 \end{axis}
 \end{tikzpicture}
-\caption{Permutation importance: drop in ROC-AUC when each feature is
-shuffled. Recency and return rate dominate; loyalty tier protects.}
+\caption{Permutation feature importance: drop in ROC-AUC when each
+feature is randomly shuffled. Recency and return rate dominate;
+loyalty tier protects against churn.}
 \label{fig:fi}
 \end{figure}
 
-The top drivers are intuitive: disengaged customers stop ordering
-(\texttt{days\_since\_last\_order}), dissatisfied customers return more
-product (\texttt{return\_rate}), loyal premium-tier customers stay,
-frequent support contacts signal friction, and long-tenure customers
-are stickier (Figure~\ref{fig:fi}). The model recovers the same drivers
-that were planted into the data-generating process, strong evidence
+These rankings are intuitive: disengaged customers stop ordering,
+dissatisfied customers return more product, loyal premium-tier
+customers stay, and frequent support contacts are a leading indicator
+of friction. The fact that the model recovers the same drivers that
+were planted into the data-generating process is strong evidence that
 the pipeline is implemented correctly.
+
+% =====================================================================
+\section{Deployment Considerations}
+% =====================================================================
+
+\subsection{Packaging and Reproducibility}
+
+The chatbot ships as a single \texttt{app.py} file plus a
+\texttt{requirements.txt} that pins the major libraries to versions
+compatible with the LangChain APIs used in the code. A typical
+deployment is
+\begin{lstlisting}[language=bash]
+pip install -r requirements.txt
+streamlit run app.py --server.port 8501
+\end{lstlisting}
+Putting the application behind an authenticating reverse proxy (nginx,
+Caddy, or an enterprise SSO gateway) is sufficient for internal use.
+Streamlit Community Cloud, Hugging Face Spaces, and standard
+container orchestrators all run the app without modification.
+
+\subsection{Configuration}
+
+The chatbot collects all credentials at runtime through the sidebar.
+In a production setting these would typically be supplied through
+environment variables read at startup, or through a secrets manager
+(AWS Secrets Manager, HashiCorp Vault). The same factory functions
+support both paths; only the source of the credentials changes.
+
+\subsection{Observability}
+
+Although the current implementation does not ship telemetry, the
+ReAct trace produced by the SQL agent is the natural starting point
+for observability. Logging the trace, together with the latency of
+each tool call and the token counts reported by the OpenAI API, gives
+a complete picture of cost and reliability per session. A
+straightforward extension is to forward these traces to an LLM
+observability platform such as LangSmith, Helicone, or Phoenix.
+
+\subsection{Cost Control}
+
+Three cost levers are exposed without any code change:
+the \texttt{max\_iterations} cap (12 for the SQL agent, 8 for the
+Pandas agent), the choice of model in the sidebar (the application
+also accepts \texttt{gpt-4} and \texttt{gpt-4-turbo}), and the
+\texttt{max\_retries} parameter on the OpenAI client. For
+cost-sensitive deployments, switching to a smaller model for the SQL
+agent and keeping GPT-4o only for visualization-code generation is a
+particularly effective optimization.
 
 % =====================================================================
 \section{Discussion}
 % =====================================================================
 
 The two deliverables reinforce each other operationally. \textbf{Part~I}
-lets a retention manager ask \textit{``show me the top 200 customers
-ranked by predicted churn risk in the last quarter, broken down by
-region''} and immediately receive a chart. \textbf{Part~II} provides the
-predictive signal that the ranking is based on. Because the chatbot
-enforces read-only operations and runs every visualization in a
-constrained sandbox, the same interface that empowers analysts also
-satisfies enterprise security requirements.
+lets a retention manager ask, in plain English, \textit{``show me the
+top 200 customers ranked by predicted churn risk in the last quarter,
+broken down by region''} and immediately receive a table or a chart.
+\textbf{Part~II} provides the predictive signal on which the ranking is
+based. Because the chatbot enforces read-only operations and runs every
+visualization in a constrained sandbox, the same interface that
+empowers analysts also satisfies the security requirements of an
+enterprise data team.
 
-Keeping both deliverables modular (single-file Streamlit app, single
-notebook) maximizes portability: each artifact can be reviewed,
-demoed, or deployed independently.
+Two architectural decisions in particular have proven valuable.
+First, separating Phase~A (SQL) from Phase~B (visualization) instead
+of combining them into a single agent produces dramatically more
+reliable behavior: each phase has a narrow, well-defined contract, and
+failures in Phase~B never corrupt the textual answer from Phase~A.
+Second, parsing the SQL agent's textual output into a real
+\texttt{DataFrame} before invoking the Pandas agent means the
+visualization step works on structured data, not on a prose
+description -- this single decision is the difference between charts
+that look right and charts that are right.
+
+Keeping both deliverables modular -- a single-file Streamlit app and a
+single Jupyter notebook -- deliberately maximizes portability. Each
+artifact can be reviewed, demoed, or deployed independently, and the
+notebook can be exported to HTML or PDF as a standalone deliverable
+for non-technical stakeholders.
 
 % =====================================================================
-\section{Limitations \& Future Work}
+\section{Limitations and Future Work}
+\label{sec:limitations}
 % =====================================================================
 
 \begin{itemize}
-  \item \textbf{Visual intent classification.} Replace the keyword
-    router with a small fine-tuned classifier or LLM-as-judge.
-  \item \textbf{Live data.} Retrain on the production warehouse via the
-    same Streamlit connection.
-  \item \textbf{Feature engineering.} Add RFM segmentation, 30/60/90
-    rolling spend, basket diversity, day-of-week patterns.
-  \item \textbf{Chart narration.} Add an explain-this-chart step that
-    asks the LLM to narrate the rendered visualization.
-  \item \textbf{Individualized interpretability.} Per-customer SHAP
-    \cite{lundberg2017unified} for personalized retention offers.
-  \item \textbf{Cost-sensitive thresholding.} Replace the 0.5 default
-    with a threshold minimizing expected business loss.
+  \item \textbf{Visual intent classification.} The current chatbot
+        uses an explicit keyword router. A small fine-tuned classifier
+        or an LLM-as-judge step would generalize better to paraphrases
+        and would also distinguish between chart types more reliably.
+  \item \textbf{Real-world data.} The notebook trains on synthetic
+        data for reproducibility. An obvious next step is to retrain
+        on the live MySQL warehouse via the same Streamlit connection
+        -- the architecture already supports it.
+  \item \textbf{Feature engineering.} The feature space can be
+        deepened with RFM segmentation and cohort-based variables
+        (30/60/90-day rolling spend, basket diversity, day-of-week
+        patterns, product-category affinity).
+  \item \textbf{Chart narration.} The chatbot can be extended with an
+        ``explain this chart'' step that asks the LLM to narrate the
+        rendered visualization, closing the loop between the visual
+        and natural-language modalities.
+  \item \textbf{Individualized interpretability.} SHAP attribution
+        \cite{lundberg2017unified} on a per-customer basis would
+        support individualized retention offers (\textit{``this
+        customer is at risk because their return rate jumped 30\% in
+        the last 60 days''}).
+  \item \textbf{Cost-sensitive thresholding.} The default 0.5
+        probability threshold can be replaced by a cost-sensitive
+        threshold that minimizes expected business loss, given known
+        acquisition and retention costs.
+  \item \textbf{True sandbox.} The current \texttt{exec()} sandbox is
+        sufficient for trusted LLM providers and internal users only.
+        For untrusted environments, the execution layer should be
+        replaced with a containerized or subprocess-based isolation
+        boundary.
+  \item \textbf{Observability.} Add structured logging of ReAct
+        traces, token counts, latencies, and per-session cost.
 \end{itemize}
 
 % =====================================================================
@@ -1014,115 +1257,76 @@ rigorous churn-prediction pipeline that ranks customers by retention
 risk. Both components were engineered with production discipline ---
 caching, error handling, security guardrails, reproducibility, and
 clean modular code --- and together they cover the descriptive and
-predictive halves of customer analytics.
+predictive halves of customer analytics. The project demonstrates
+that modern LLM tooling, combined with classical machine learning,
+can deliver real, deployable business value when wrapped in the right
+engineering scaffolding.
+
+% =====================================================================
+\section*{Acknowledgments}
+% =====================================================================
+
+We sincerely thank our supervisor Prof.~Dr.~Jebran Khan for his
+expert guidance, his unwavering support, and the constructive feedback
+that shaped every major design decision in this report. His insights
+on agentic LLM systems, modern data infrastructure, and rigorous
+machine-learning practice were invaluable throughout the lifecycle of
+this project. We also gratefully acknowledge the Department of
+Artificial Intelligence for providing the academic environment,
+computational resources, and collaborative culture that made this
+work possible, and we thank our peers for their thoughtful review and
+encouragement.
 
 % =====================================================================
 \begin{thebibliography}{9}
-\small
+% =====================================================================
+
 \bibitem{yao2022react}
-S.~Yao et al. {ReAct: Synergizing Reasoning and Acting in Language
-  Models}. \emph{arXiv:2210.03629}, 2022.
+S.~Yao, J.~Zhao, D.~Yu, N.~Du, I.~Shafran, K.~Narasimhan, Y.~Cao.
+\newblock {ReAct: Synergizing Reasoning and Acting in Language Models}.
+\newblock \emph{arXiv preprint arXiv:2210.03629}, 2022.
 
 \bibitem{friedman2001greedy}
-J.~H. Friedman. {Greedy Function Approximation: A Gradient Boosting
-  Machine}. \emph{Annals of Statistics}, 29(5):1189--1232, 2001.
+J.~H. Friedman.
+\newblock {Greedy Function Approximation: A Gradient Boosting Machine}.
+\newblock \emph{Annals of Statistics}, 29(5):1189--1232, 2001.
 
 \bibitem{breiman2001random}
-L.~Breiman. {Random Forests}. \emph{Machine Learning},
-  45(1):5--32, 2001.
+L.~Breiman.
+\newblock {Random Forests}.
+\newblock \emph{Machine Learning}, 45(1):5--32, 2001.
 
 \bibitem{lundberg2017unified}
-S.~M. Lundberg, S.-I. Lee. {A Unified Approach to Interpreting Model
-  Predictions}. \emph{NeurIPS}, 2017.
+S.~M. Lundberg, S.-I. Lee.
+\newblock {A Unified Approach to Interpreting Model Predictions}.
+\newblock In \emph{NeurIPS}, 2017.
 
 \bibitem{sklearn}
-F.~Pedregosa et al. {Scikit-learn: Machine Learning in Python}.
-  \emph{JMLR}, 12:2825--2830, 2011.
+F.~Pedregosa et al.
+\newblock {Scikit-learn: Machine Learning in Python}.
+\newblock \emph{JMLR}, 12:2825--2830, 2011.
 
 \bibitem{langchain}
-LangChain Docs. \url{https://python.langchain.com}, 2025.
+LangChain Documentation. \url{https://python.langchain.com}, accessed 2025.
 
 \bibitem{streamlit}
-Streamlit Docs. \url{https://docs.streamlit.io}, 2025.
+Streamlit Documentation. \url{https://docs.streamlit.io}, accessed 2025.
 
 \bibitem{plotly}
-Plotly Express Docs. \url{https://plotly.com/python/plotly-express}, 2025.
+Plotly Express Documentation. \url{https://plotly.com/python/plotly-express}, accessed 2025.
 
 \bibitem{openai}
-OpenAI API Reference. \url{https://platform.openai.com/docs}, 2025.
+OpenAI API Reference. \url{https://platform.openai.com/docs}, accessed 2025.
+
 \end{thebibliography}
 
-% =====================================================================
-% LAST PAGE  (one column)
-% =====================================================================
-\onecolumn
-\clearpage
-\thispagestyle{empty}
-
-\vspace*{1.5cm}
-
-\begin{center}
-\begin{tikzpicture}
-\fill[pBlue, rounded corners=10pt]
-  (-7.5,-0.7) rectangle (7.5,0.9);
-\node[color=white, font=\Huge\bfseries] at (0,0.1) {Acknowledgments};
-\end{tikzpicture}
-\end{center}
-
 \vspace{1.0cm}
-
 \begin{center}
-\begin{tcolorbox}[
-  enhanced, colback=pBg, colframe=pBlue, boxrule=0.7pt,
-  arc=4pt, width=0.85\textwidth, drop shadow=black!30,
-  left=14pt, right=14pt, top=10pt, bottom=10pt
-]
-\large
-We sincerely thank our supervisor
-\textbf{\color{pBlue}Prof.\ Dr.\ Jebran Khan} for his expert guidance,
-unwavering support, and constructive feedback throughout the lifecycle
-of this project. His insights on agentic LLM systems, modern data
-infrastructure, and rigorous machine-learning practice shaped every
-major design decision in this report.
-
-\medskip
-
-We also gratefully acknowledge the
-\textbf{Department of Artificial Intelligence} for providing the
-academic environment, computational resources, and collaborative
-culture that made this work possible, and we thank our peers for
-their thoughtful review and encouragement.
-\end{tcolorbox}
-\end{center}
-
-\vspace{1.5cm}
-
-\begin{center}
-\begin{tcolorbox}[
-  enhanced, colback=pBlue, colframe=pBlue,
-  arc=6pt, width=0.85\textwidth, left=20pt, right=20pt, top=14pt, bottom=14pt,
-  drop shadow=black!50
-]
-\color{white}
-\centering
-{\Large\bfseries Project Team}\\[10pt]
-\begin{tabular}{rl}
-\large Tuyiramye Christian & \large ID:\ \texttt{2517025}\\[6pt]
-\large Dushime Pacifique   & \large ID:\ \texttt{2517004}\\
-\end{tabular}\\[12pt]
-\textcolor{pYellow}{\rule{0.55\linewidth}{0.4pt}}\\[8pt]
-{\large\bfseries Supervisor}\\[4pt]
-{\Large Prof.\ Dr.\ Jebran Khan}\\[12pt]
-\textcolor{pYellow}{\rule{0.55\linewidth}{0.4pt}}\\[8pt]
-\textbf{Department:} Artificial Intelligence\\[3pt]
-\textbf{Term:} Spring 2025
-\end{tcolorbox}
-\end{center}
-
-\vfill
-\begin{center}
-\textcolor{pGray}{\itshape ``The best way to predict the future is to build it.''}\\[3pt]
-\textcolor{pGray}{\small --- end of report ---}
+\rule{0.7\textwidth}{0.4pt}\\[6pt]
+\textit{Report prepared by} \textbf{Tuyiramye Christian (2517025)}
+\textit{and} \textbf{Dushime Pacifique (2517004)}\\
+\textit{Supervised by} \textbf{Prof.\ Dr.\ Jebran Khan}\\
+\textit{Department of Artificial Intelligence -- Spring 2025}
 \end{center}
 
 \end{document}

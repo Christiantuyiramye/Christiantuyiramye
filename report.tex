@@ -326,7 +326,7 @@ the end-to-end architecture of the chat application.
                 align=center},
   router/.style={diamond, aspect=2, draw, fill=gray!15,
                  minimum width=3.6cm, minimum height=0.6cm, align=center},
-  out/.style={rectangle, draw, fill=gray!8,
+  outnode/.style={rectangle, draw, fill=gray!8,
               rounded corners=4pt, minimum width=3.8cm, minimum height=0.9cm,
               align=center},
   db/.style={cylinder, shape border rotate=90, aspect=0.25,
@@ -341,9 +341,9 @@ the end-to-end architecture of the chat application.
   \node[ui, below=of user] (ui) {\textbf{Streamlit UI} (\texttt{app.py})\\ {\tiny wide layout + sidebar credentials}};
   \node[agent, below=of ui] (sql) {\textbf{Phase A: SQL Agent}\\ \tiny ZERO\_SHOT\_REACT\_DESCRIPTION\\ \tiny read-only system prefix};
   \node[router, below=of sql] (route) {\textbf{Visual router}};
-  \node[out, below left=1.1cm and -0.2cm of route] (text) {Text / Table\\ \tiny answer};
+  \node[outnode, below left=1.1cm and -0.2cm of route] (text) {Text / Table\\ \tiny answer};
   \node[agent, below right=1.1cm and -0.2cm of route] (pandas) {\textbf{Phase B: Pandas Agent}\\ \tiny plotly / matplotlib code};
-  \node[out, below=of pandas] (chart) {\textbf{Sandboxed \texttt{exec()}}\\ \tiny Streamlit chart};
+  \node[outnode, below=of pandas] (chart) {\textbf{Sandboxed \texttt{exec()}}\\ \tiny Streamlit chart};
   \node[db,  right=2.3cm of sql] (mysql) {\textbf{MySQL}\\ \tiny e-commerce};
   \node[llm, left=2.3cm of sql]  (llm)   {\textbf{OpenAI}\\ \tiny GPT-4o, T=0};
 
@@ -488,19 +488,19 @@ reasons.
 \begin{tikzpicture}[
   node distance=0.45cm and 0.55cm,
   every node/.style={font=\scriptsize},
-  step/.style={rectangle, rounded corners=3pt, draw, fill=gray!8,
+  mystep/.style={rectangle, rounded corners=3pt, draw, fill=gray!8,
                minimum width=3.4cm, minimum height=0.55cm, align=center}
 ]
-\node[step] (t1) {\emph{Thought}: list tables};
-\node[step, below=of t1] (a1) {\emph{Action}: \texttt{list\_tables}};
-\node[step, below=of a1] (o1) {\emph{Observation}: customers, orders, \ldots};
-\node[step, below=of o1] (t2) {\emph{Thought}: inspect relevant schema};
-\node[step, below=of t2] (a2) {\emph{Action}: \texttt{schema(customers, orders)}};
-\node[step, below=of a2] (o2) {\emph{Observation}: column list, sample rows};
-\node[step, below=of o2] (t3) {\emph{Thought}: draft \texttt{SELECT}};
-\node[step, below=of t3] (a3) {\emph{Action}: \texttt{query(SELECT \ldots)}};
-\node[step, below=of a3] (o3) {\emph{Observation}: result rows};
-\node[step, below=of o3] (f)  {\emph{Final answer}: summary + table};
+\node[mystep] (t1) {\emph{Thought}: list tables};
+\node[mystep, below=of t1] (a1) {\emph{Action}: \texttt{list\_tables}};
+\node[mystep, below=of a1] (o1) {\emph{Observation}: customers, orders, \ldots};
+\node[mystep, below=of o1] (t2) {\emph{Thought}: inspect relevant schema};
+\node[mystep, below=of t2] (a2) {\emph{Action}: \texttt{schema(customers, orders)}};
+\node[mystep, below=of a2] (o2) {\emph{Observation}: column list, sample rows};
+\node[mystep, below=of o2] (t3) {\emph{Thought}: draft \texttt{SELECT}};
+\node[mystep, below=of t3] (a3) {\emph{Action}: \texttt{query(SELECT \ldots)}};
+\node[mystep, below=of a3] (o3) {\emph{Observation}: result rows};
+\node[mystep, below=of o3] (f)  {\emph{Final answer}: summary + table};
 \foreach \i/\j in {t1/a1,a1/o1,o1/t2,t2/a2,a2/o2,o2/t3,t3/a3,a3/o3,o3/f}
   \draw[-{Latex[length=1.6mm]}] (\i) -- (\j);
 \end{tikzpicture}
@@ -565,7 +565,7 @@ character), strips the alignment row, and feeds the remainder to
 list-of-tuples regex (\texttt{[(\ldots), (\ldots), \ldots]}) for the
 case where the agent returns a raw cursor dump rather than a Markdown
 table. If both stages fail, the DataFrame is \texttt{None} and the
-visualization step is skipped with a friendly explanation; the textual
+visualization mystep is skipped with a friendly explanation; the textual
 answer is still shown to the user.
 
 \subsection{Phase B --- The Pandas DataFrame Agent}
@@ -852,21 +852,21 @@ The dataset is split 80/20 with stratification on the target and
 \begin{tikzpicture}[
   node distance=0.7cm and 0.6cm,
   every node/.style={font=\small},
-  step/.style={rectangle, rounded corners=4pt, draw, fill=gray!10,
+  mystep/.style={rectangle, rounded corners=4pt, draw, fill=gray!10,
                minimum width=2.4cm, minimum height=1.0cm, align=center},
   ar/.style={-{Latex[length=2.4mm]}, line width=0.7pt}
 ]
-\node[step] (gen)  {Synthetic\\ Dataset\\ \tiny 5{,}000 rows};
-\node[step, right=of gen]   (prep) {Preprocess\\ \tiny scale + OHE};
-\node[step, right=of prep]  (split){Train/Test\\ \tiny 80/20 stratified};
-\node[step, right=of split] (cv)   {5-fold CV\\ \tiny LR / RF / GBM};
-\node[step, right=of cv]    (tune) {Grid Search\\ \tiny best model};
-\node[step, right=of tune]  (eval) {Evaluate\\ \tiny ROC / PR / CM};
+\node[mystep] (gen)  {Synthetic\\ Dataset\\ \tiny 5{,}000 rows};
+\node[mystep, right=of gen]   (prep) {Preprocess\\ \tiny scale + OHE};
+\node[mystep, right=of prep]  (split){Train/Test\\ \tiny 80/20 stratified};
+\node[mystep, right=of split] (cv)   {5-fold CV\\ \tiny LR / RF / GBM};
+\node[mystep, right=of cv]    (tune) {Grid Search\\ \tiny best model};
+\node[mystep, right=of tune]  (eval) {Evaluate\\ \tiny ROC / PR / CM};
 \foreach \i/\j in {gen/prep, prep/split, split/cv, cv/tune, tune/eval}
   \draw[ar] (\i) -- (\j);
 \end{tikzpicture}
 \caption{End-to-end machine-learning pipeline implemented in the
-Jupyter notebook. Every step lives inside an sklearn \texttt{Pipeline}
+Jupyter notebook. Every mystep lives inside an sklearn \texttt{Pipeline}
 so cross-validation is leakage-free.}
 \label{fig:ml-pipeline}
 \end{figure}
@@ -1087,31 +1087,15 @@ of churn (Figure~\ref{fig:fi}):
   xbar, bar width=10pt,
   xmin=0, xmax=0.18,
   xlabel={Permutation $\Delta$ROC-AUC},
-  symbolic y coords={
-    discount\_usage, age, gender,
-    region, payment, orders/mo,
-    tenure, tickets, tier=Gold,
-    tier=Platinum, return\_rate, recency
-  },
+  symbolic y coords={discount,age,gender,region,payment,orders,tenure,tickets,gold,platinum,returns,recency},
   ytick=data,
   nodes near coords,
   nodes near coords style={font=\tiny}
 ]
-\addplot+[draw, fill=gray!40]
-  coordinates {
-    (0.005, discount\_usage)
-    (0.007, age)
-    (0.008, gender)
-    (0.010, region)
-    (0.012, payment)
-    (0.020, orders/mo)
-    (0.025, tenure)
-    (0.040, tickets)
-    (0.055, tier=Gold)
-    (0.065, tier=Platinum)
-    (0.110, return\_rate)
-    (0.155, recency)
-  };
+\addplot+[draw, fill=gray!40] coordinates {
+  (0.005,discount) (0.007,age) (0.008,gender) (0.010,region)
+  (0.012,payment) (0.020,orders) (0.025,tenure) (0.040,tickets)
+  (0.055,gold) (0.065,platinum) (0.110,returns) (0.155,recency)};
 \end{axis}
 \end{tikzpicture}
 \caption{Permutation feature importance: drop in ROC-AUC when each
@@ -1196,7 +1180,7 @@ reliable behavior: each phase has a narrow, well-defined contract, and
 failures in Phase~B never corrupt the textual answer from Phase~A.
 Second, parsing the SQL agent's textual output into a real
 \texttt{DataFrame} before invoking the Pandas agent means the
-visualization step works on structured data, not on a prose
+visualization mystep works on structured data, not on a prose
 description -- this single decision is the difference between charts
 that look right and charts that are right.
 
@@ -1214,10 +1198,10 @@ for non-technical stakeholders.
 \begin{itemize}
   \item \textbf{Visual intent classification.} The current chatbot
         uses an explicit keyword router. A small fine-tuned classifier
-        or an LLM-as-judge step would generalize better to paraphrases
+        or an LLM-as-judge mystep would generalize better to paraphrases
         and would also distinguish between chart types more reliably.
   \item \textbf{Real-world data.} The notebook trains on synthetic
-        data for reproducibility. An obvious next step is to retrain
+        data for reproducibility. An obvious next mystep is to retrain
         on the live MySQL warehouse via the same Streamlit connection
         -- the architecture already supports it.
   \item \textbf{Feature engineering.} The feature space can be
@@ -1225,7 +1209,7 @@ for non-technical stakeholders.
         (30/60/90-day rolling spend, basket diversity, day-of-week
         patterns, product-category affinity).
   \item \textbf{Chart narration.} The chatbot can be extended with an
-        ``explain this chart'' step that asks the LLM to narrate the
+        ``explain this chart'' mystep that asks the LLM to narrate the
         rendered visualization, closing the loop between the visual
         and natural-language modalities.
   \item \textbf{Individualized interpretability.} SHAP attribution

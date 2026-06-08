@@ -144,7 +144,7 @@ Runtime            & Python 3.11 \\
                 rounded corners=4pt, minimum width=5.8cm, minimum height=1.5cm, align=center},
   router/.style={diamond, aspect=2, draw=pYellow!70!black, fill=pYellow!25, line width=1pt,
                  minimum width=5.0cm, minimum height=0.8cm, align=center},
-  out/.style={rectangle, draw=pTeal, fill=pTeal!15, line width=1pt,
+  outnode/.style={rectangle, draw=pTeal, fill=pTeal!15, line width=1pt,
               rounded corners=4pt, minimum width=4.8cm, minimum height=1.1cm, align=center},
   ar/.style={-{Latex[length=4mm]}, line width=1pt, draw=pGray}
 ]
@@ -152,9 +152,9 @@ Runtime            & Python 3.11 \\
   \node[ui, below=of u]             (ui)    {\textbf{Streamlit UI} (\texttt{app.py})};
   \node[agent, below=of ui]         (sql)   {\textbf{Phase A: SQL Agent}\\ \small ZSR-D\,/\,read-only prefix};
   \node[router, below=of sql]       (rt)    {\textbf{Visual router}};
-  \node[out, below left=1.2cm and -0.3cm of rt] (tx) {Text / Table};
+  \node[outnode, below left=1.2cm and -0.3cm of rt] (tx) {Text / Table};
   \node[agent, below right=1.2cm and -0.3cm of rt] (pd) {\textbf{Phase B: Pandas Agent}\\ \small Plotly\,/\,Matplotlib code};
-  \node[out, below=of pd]           (ch)    {\textbf{Sandboxed \texttt{exec()}} chart};
+  \node[outnode, below=of pd]       (ch)    {\textbf{Sandboxed \texttt{exec()}} chart};
   \draw[ar] (u)--(ui); \draw[ar] (ui)--(sql); \draw[ar] (sql)--(rt);
   \draw[ar] (rt)--(tx); \draw[ar] (rt)--(pd); \draw[ar] (pd)--(ch);
 \end{tikzpicture}
@@ -228,17 +228,17 @@ visualization code only when the prompt contains a visual trigger.
 \begin{tikzpicture}[
   node distance=0.4cm and 0.3cm,
   every node/.style={font=\small},
-  step/.style={rectangle, rounded corners=4pt, line width=1pt,
+  mystep/.style={rectangle, rounded corners=4pt, line width=1pt,
                draw=pBlue, fill=pBlue!10,
                minimum width=3.0cm, minimum height=1.4cm, align=center},
   ar/.style={-{Latex[length=3mm]}, line width=1pt, draw=pGray}
 ]
-\node[step] (a) {Synthetic\\ Dataset\\ \scriptsize 5{,}000};
-\node[step, right=of a] (b) {Pre-\\process\\ \scriptsize scale+OHE};
-\node[step, right=of b] (c) {Train/\\Test\\ \scriptsize 80/20};
-\node[step, right=of c] (d) {5-fold\\ CV\\ \scriptsize LR/RF/GBM};
-\node[step, right=of d] (e) {Grid\\ Search\\ \scriptsize tune};
-\node[step, right=of e] (f) {Evaluate\\ \scriptsize ROC/PR/CM};
+\node[mystep] (a) {Synthetic\\ Dataset\\ \scriptsize 5{,}000};
+\node[mystep, right=of a] (b) {Pre-\\process\\ \scriptsize scale+OHE};
+\node[mystep, right=of b] (c) {Train/\\Test\\ \scriptsize 80/20};
+\node[mystep, right=of c] (d) {5-fold\\ CV\\ \scriptsize LR/RF/GBM};
+\node[mystep, right=of d] (e) {Grid\\ Search\\ \scriptsize tune};
+\node[mystep, right=of e] (f) {Evaluate\\ \scriptsize ROC/PR/CM};
 \foreach \i/\j in {a/b,b/c,c/d,d/e,e/f} \draw[ar] (\i)--(\j);
 \end{tikzpicture}
 \end{center}
@@ -295,32 +295,17 @@ baseline by a clear margin on the held-out test set.
   xbar, bar width=14pt,
   xmin=0, xmax=0.18,
   xlabel={Permutation $\Delta$ROC-AUC},
-  symbolic y coords={
-    discount, age, gender, region, payment,
-    orders/mo, tenure, tickets,
-    tier=Gold, tier=Platinum, return\_rate, recency
-  },
+  symbolic y coords={discount,age,gender,region,payment,orders,tenure,tickets,gold,platinum,returns,recency},
   ytick=data,
   tick label style={font=\small},
   nodes near coords,
   every node near coord/.append style={font=\small, color=pBlue},
   axis line style={draw=pGray}
 ]
-\addplot+[draw=pBlue, fill=pBlueLight!50, line width=1pt]
-  coordinates {
-    (0.005, discount)
-    (0.007, age)
-    (0.008, gender)
-    (0.010, region)
-    (0.012, payment)
-    (0.020, orders/mo)
-    (0.025, tenure)
-    (0.040, tickets)
-    (0.055, tier=Gold)
-    (0.065, tier=Platinum)
-    (0.110, return\_rate)
-    (0.155, recency)
-  };
+\addplot+[draw=pBlue, fill=pBlueLight!50, line width=1pt] coordinates {
+  (0.005,discount) (0.007,age) (0.008,gender) (0.010,region)
+  (0.012,payment) (0.020,orders) (0.025,tenure) (0.040,tickets)
+  (0.055,gold) (0.065,platinum) (0.110,returns) (0.155,recency)};
 \end{axis}
 \end{tikzpicture}
 \end{center}

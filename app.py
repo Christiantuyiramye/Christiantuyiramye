@@ -378,7 +378,7 @@ def config_is_complete(cfg: dict) -> bool:
 def main() -> None:
     st.set_page_config(
         page_title="Conversational EDA Chatbot",
-        page_icon="",
+        page_icon="📊",
         layout="wide",
         initial_sidebar_state="expanded",
     )
@@ -398,7 +398,7 @@ def main() -> None:
         st.info(
             "Enter your OpenAI API key and MySQL connection details in the "
             "sidebar to begin.",
-            icon="i",
+            icon="ℹ️",
         )
         st.stop()
 

@@ -49,7 +49,6 @@ import pandas as pd
 import streamlit as st
 
 # LangChain - SQL stack
-from langchain.agents import AgentType
 from langchain_community.agent_toolkits.sql.base import create_sql_agent
 from langchain_community.utilities import SQLDatabase
 from langchain_openai import ChatOpenAI
@@ -163,11 +162,11 @@ def get_sql_agent(_llm: ChatOpenAI, _db: SQLDatabase):
     return create_sql_agent(
         llm=_llm,
         db=_db,
-        agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+        agent_type="tool-calling",
         prefix=SQL_SYSTEM_PREFIX,
         verbose=False,
-        handle_parsing_errors=True,
         max_iterations=12,
+        agent_executor_kwargs={"handle_parsing_errors": True},
     )
 
 
@@ -264,12 +263,12 @@ def generate_visualization_code(
     pandas_agent = create_pandas_dataframe_agent(
         llm=llm,
         df=df,
-        agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+        agent_type="tool-calling",
         verbose=False,
         allow_dangerous_code=True,  # required by newer langchain-experimental
-        handle_parsing_errors=True,
         prefix=PANDAS_VIZ_INSTRUCTIONS,
         max_iterations=8,
+        agent_executor_kwargs={"handle_parsing_errors": True},
     )
 
     prompt = (

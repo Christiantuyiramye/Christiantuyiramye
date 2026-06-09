@@ -49,13 +49,13 @@ import pandas as pd
 import streamlit as st
 
 # LangChain - SQL stack
-from langchain.agents.agent_types import AgentType
+from langchain.agents import AgentType
 from langchain_community.agent_toolkits.sql.base import create_sql_agent
 from langchain_community.utilities import SQLDatabase
 from langchain_openai import ChatOpenAI
 
 # LangChain - Pandas / experimental stack (visualization)
-from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
+from langchain_experimental.agents import create_pandas_dataframe_agent
 
 # Plotting libraries made available to the exec() sandbox
 import matplotlib.pyplot as plt

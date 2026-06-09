@@ -40,6 +40,7 @@ Run
 from __future__ import annotations
 
 import io
+import os
 import re
 import textwrap
 import traceback
@@ -409,28 +410,49 @@ def render_sidebar() -> dict:
     )
 
     model_options = {
-        "OpenAI": ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo"],
         "Groq (free)": ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
         "Google Gemini (free)": ["gemini-2.0-flash", "gemini-1.5-flash"],
+        "OpenAI": ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo"],
     }
     key_help = {
-        "OpenAI": "platform.openai.com/api-keys  (requires account credit)",
         "Groq (free)": "console.groq.com/keys  (free, no credit card)",
         "Google Gemini (free)": "aistudio.google.com/apikey  (free, no credit card)",
+        "OpenAI": "platform.openai.com/api-keys  (requires account credit)",
+    }
+    # Environment variable that each provider's key is auto-loaded from.
+    key_env = {
+        "Groq (free)": "GROQ_API_KEY",
+        "Google Gemini (free)": "GOOGLE_API_KEY",
+        "OpenAI": "OPENAI_API_KEY",
     }
 
     with st.sidebar.expander("Language model", expanded=True):
         provider = st.selectbox(
             "Provider",
-            options=["OpenAI", "Groq (free)", "Google Gemini (free)"],
+            options=["Groq (free)", "Google Gemini (free)", "OpenAI"],
             index=0,
             help="Groq and Google Gemini give you a free API key with no credit card.",
         )
+
+        # Auto-load the key from an environment variable or Streamlit secrets,
+        # so it can be set once instead of pasted every session.
+        env_name = key_env[provider]
+        prefilled = os.environ.get(env_name, "")
+        if not prefilled:
+            try:
+                prefilled = st.secrets.get(env_name, "")  # type: ignore[attr-defined]
+            except Exception:
+                prefilled = ""
+
         api_key = st.text_input(
             f"{provider.split(' ')[0]} API Key",
+            value=prefilled,
             type="password", key="llm_api_key",
         )
-        st.caption(f"Get a key: {key_help[provider]}")
+        if prefilled:
+            st.caption(f"Loaded from {env_name}.")
+        else:
+            st.caption(f"Get a free key: {key_help[provider]}")
         model_name = st.selectbox("Model", options=model_options[provider], index=0)
 
     data_source = st.sidebar.radio(

@@ -51,7 +51,6 @@ import streamlit as st
 # LangChain - SQL stack
 from langchain_community.agent_toolkits.sql.base import create_sql_agent
 from langchain_community.utilities import SQLDatabase
-from langchain_openai import ChatOpenAI
 
 # LangChain - Pandas / experimental stack (visualization)
 from langchain_experimental.agents import create_pandas_dataframe_agent
@@ -213,19 +212,39 @@ def get_demo_database() -> SQLDatabase:
 
 
 @st.cache_resource(show_spinner=False)
-def get_llm(api_key: str, model: str = "gpt-4o") -> ChatOpenAI:
-    """Instantiate a deterministic ChatOpenAI client (temperature=0)."""
-    return ChatOpenAI(
-        model=model,
-        temperature=0,
-        api_key=api_key,
-        timeout=60,
-        max_retries=2,
-    )
+def get_llm(provider: str, api_key: str, model: str):
+    """
+    Instantiate a deterministic chat model (temperature=0) for the chosen
+    provider. Imports are lazy so that providers you do not use need not
+    be installed.
+
+    Supported providers:
+      - "OpenAI"        -> langchain_openai.ChatOpenAI
+      - "Groq"          -> langchain_groq.ChatGroq          (free API key)
+      - "Google Gemini" -> langchain_google_genai.ChatGoogleGenerativeAI (free)
+    """
+    if provider.startswith("OpenAI"):
+        from langchain_openai import ChatOpenAI
+        return ChatOpenAI(
+            model=model, temperature=0, api_key=api_key,
+            timeout=60, max_retries=2,
+        )
+    if provider.startswith("Groq"):
+        from langchain_groq import ChatGroq
+        return ChatGroq(
+            model=model, temperature=0, api_key=api_key,
+            timeout=60, max_retries=2,
+        )
+    if provider.startswith("Google"):
+        from langchain_google_genai import ChatGoogleGenerativeAI
+        return ChatGoogleGenerativeAI(
+            model=model, temperature=0, google_api_key=api_key,
+        )
+    raise ValueError(f"Unknown provider: {provider}")
 
 
 @st.cache_resource(show_spinner=False)
-def get_sql_agent(_llm: ChatOpenAI, _db: SQLDatabase):
+def get_sql_agent(_llm, _db: SQLDatabase):
     """
     Build a ZERO_SHOT_REACT_DESCRIPTION SQL agent.
 
@@ -330,7 +349,7 @@ def strip_code_fences(code: str) -> str:
 
 
 def generate_visualization_code(
-    llm: ChatOpenAI, df: pd.DataFrame, question: str
+    llm, df: pd.DataFrame, question: str
 ) -> str:
     """Run the experimental pandas agent to produce plotting code."""
     pandas_agent = create_pandas_dataframe_agent(
@@ -389,13 +408,30 @@ def render_sidebar() -> dict:
         "written to disk."
     )
 
-    with st.sidebar.expander("OpenAI", expanded=True):
-        openai_api_key = st.text_input(
-            "OpenAI API Key", type="password", key="openai_api_key"
+    model_options = {
+        "OpenAI": ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo"],
+        "Groq (free)": ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
+        "Google Gemini (free)": ["gemini-2.0-flash", "gemini-1.5-flash"],
+    }
+    key_help = {
+        "OpenAI": "platform.openai.com/api-keys  (requires account credit)",
+        "Groq (free)": "console.groq.com/keys  (free, no credit card)",
+        "Google Gemini (free)": "aistudio.google.com/apikey  (free, no credit card)",
+    }
+
+    with st.sidebar.expander("Language model", expanded=True):
+        provider = st.selectbox(
+            "Provider",
+            options=["OpenAI", "Groq (free)", "Google Gemini (free)"],
+            index=0,
+            help="Groq and Google Gemini give you a free API key with no credit card.",
         )
-        model_name = st.selectbox(
-            "Model", options=["gpt-4o", "gpt-4", "gpt-4-turbo"], index=0
+        api_key = st.text_input(
+            f"{provider.split(' ')[0]} API Key",
+            type="password", key="llm_api_key",
         )
+        st.caption(f"Get a key: {key_help[provider]}")
+        model_name = st.selectbox("Model", options=model_options[provider], index=0)
 
     data_source = st.sidebar.radio(
         "Data source",
@@ -439,7 +475,8 @@ def render_sidebar() -> dict:
         st.rerun()
 
     return {
-        "openai_api_key": openai_api_key,
+        "provider": provider,
+        "api_key": api_key,
         "model_name": model_name,
         "use_demo": use_demo,
         "host": mysql_host,
@@ -466,12 +503,42 @@ def render_history():
 
 
 def config_is_complete(cfg: dict) -> bool:
-    if not cfg.get("openai_api_key"):
+    if not cfg.get("api_key"):
         return False
     if cfg.get("use_demo"):
-        return True  # demo mode only needs the OpenAI key
+        return True  # demo mode only needs the model API key
     required = ("host", "user", "database")
     return all(cfg.get(k) for k in required)
+
+
+def friendly_error_message(exc: Exception) -> str:
+    """Turn common provider errors into a clear, actionable message."""
+    text = str(exc).lower()
+    if "insufficient_quota" in text or "exceeded your current quota" in text:
+        return (
+            "Your OpenAI account has no available credit, so OpenAI rejected "
+            "the request. Either add credit at platform.openai.com/account/billing, "
+            "or switch the **Provider** in the sidebar to **Groq** or "
+            "**Google Gemini** — both give you a free API key with no credit card."
+        )
+    if "rate limit" in text or "rate_limit" in text or " 429" in text:
+        return (
+            "The model provider rate-limited this request. Wait a few seconds "
+            "and ask again."
+        )
+    if any(s in text for s in ("invalid api key", "incorrect api key",
+                               "authentication", "401", "unauthorized",
+                               "api key not valid")):
+        return (
+            "The API key was rejected. Check that the key matches the selected "
+            "provider and was copied in full."
+        )
+    if "no module named" in text:
+        return (
+            "A provider package is not installed. Run:  "
+            "`py -m pip install -r requirements.txt`  then restart the app."
+        )
+    return "The SQL agent failed to answer this question. See details below."
 
 
 # ---------------------------------------------------------------------------
@@ -498,16 +565,17 @@ def main() -> None:
         st.session_state.messages = []
 
     if not config_is_complete(cfg):
+        provider_name = cfg.get("provider", "model").split(" ")[0]
         if cfg.get("use_demo"):
             st.info(
-                "Enter your OpenAI API key in the sidebar to begin. "
+                f"Enter your {provider_name} API key in the sidebar to begin. "
                 "The demo e-commerce dataset is ready to query.",
                 icon="ℹ️",
             )
         else:
             st.info(
-                "Enter your OpenAI API key and MySQL connection details in "
-                "the sidebar to begin.",
+                f"Enter your {provider_name} API key and MySQL connection "
+                "details in the sidebar to begin.",
                 icon="ℹ️",
             )
         st.stop()
@@ -524,10 +592,12 @@ def main() -> None:
                 port=cfg["port"],
                 database=cfg["database"],
             )
-        llm = get_llm(cfg["openai_api_key"], model=cfg["model_name"])
+        llm = get_llm(cfg["provider"], cfg["api_key"], cfg["model_name"])
         sql_agent = get_sql_agent(llm, db)
     except Exception as exc:
-        st.error(f"Failed to initialize backend resources: {exc}")
+        st.error(friendly_error_message(exc))
+        with st.expander("Technical details"):
+            st.code(str(exc))
         st.stop()
 
     if cfg["use_demo"]:
@@ -555,10 +625,10 @@ def main() -> None:
         with st.spinner("Querying the database..."):
             try:
                 sql_output = run_sql_agent(sql_agent, user_input)
-            except Exception:
+            except Exception as exc:
                 err = traceback.format_exc()
-                st.error("The SQL agent failed to answer this question.")
-                with st.expander("Traceback"):
+                st.error(friendly_error_message(exc))
+                with st.expander("Technical details"):
                     st.code(err)
                 st.session_state.messages.append(
                     {"role": "assistant", "text": "SQL agent failed.", "error": err}

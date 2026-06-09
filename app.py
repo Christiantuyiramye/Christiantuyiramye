@@ -139,6 +139,79 @@ def get_database(
     return SQLDatabase.from_uri(uri, sample_rows_in_table_info=3)
 
 
+def generate_ecommerce_dataset(n_customers: int = 5000, seed: int = 42) -> pd.DataFrame:
+    """
+    Generate the same realistic e-commerce churn dataset used in the
+    companion Jupyter notebook (fixed seed -> identical data every run).
+    """
+    import numpy as np
+
+    rng = np.random.default_rng(seed)
+
+    age = rng.integers(18, 70, n_customers)
+    gender = rng.choice(["Male", "Female"], n_customers, p=[0.48, 0.52])
+    region = rng.choice(["North", "South", "East", "West"], n_customers)
+    membership = rng.choice(
+        ["Basic", "Silver", "Gold", "Platinum"],
+        n_customers, p=[0.40, 0.30, 0.20, 0.10],
+    )
+    payment = rng.choice(["Card", "Mobile", "Cash", "BankTransfer"], n_customers)
+
+    tenure_months = rng.integers(1, 60, n_customers)
+    avg_order_value = rng.gamma(5, 20, n_customers).round(2)
+    orders_per_month = np.clip(rng.normal(3, 1.5, n_customers), 0.1, None).round(2)
+    return_rate = np.clip(rng.beta(2, 8, n_customers), 0, 1).round(3)
+    support_tickets = rng.poisson(2, n_customers)
+    days_since_last_order = rng.integers(0, 180, n_customers)
+    discount_usage = rng.beta(2, 5, n_customers).round(3)
+
+    churn_score = (
+        0.020 * days_since_last_order
+        + 1.500 * return_rate
+        + 0.150 * support_tickets
+        - 0.030 * tenure_months
+        - 0.400 * (membership == "Platinum")
+        - 0.200 * (membership == "Gold")
+        - 0.300 * orders_per_month / 5
+        + rng.normal(0, 0.5, n_customers)
+    )
+    churned = (churn_score > np.percentile(churn_score, 73)).astype(int)
+
+    return pd.DataFrame({
+        "customer_id": np.arange(1, n_customers + 1),
+        "age": age,
+        "gender": gender,
+        "region": region,
+        "membership_tier": membership,
+        "preferred_payment": payment,
+        "tenure_months": tenure_months,
+        "avg_order_value": avg_order_value,
+        "orders_per_month": orders_per_month,
+        "return_rate": return_rate,
+        "support_tickets": support_tickets,
+        "days_since_last_order": days_since_last_order,
+        "discount_usage": discount_usage,
+        "churned": churned,
+    })
+
+
+@st.cache_resource(show_spinner="Building the demo dataset...")
+def get_demo_database() -> SQLDatabase:
+    """
+    Generate the notebook's synthetic e-commerce dataset and load it into a
+    local SQLite database. Requires no MySQL server and no credentials --
+    only an OpenAI API key is needed to use the chatbot.
+
+    The data is written to a `customers` table in `ecommerce_demo.db`.
+    """
+    from sqlalchemy import create_engine
+
+    df = generate_ecommerce_dataset()
+    engine = create_engine("sqlite:///ecommerce_demo.db")
+    df.to_sql("customers", engine, if_exists="replace", index=False)
+    return SQLDatabase(engine, sample_rows_in_table_info=3)
+
+
 @st.cache_resource(show_spinner=False)
 def get_llm(api_key: str, model: str = "gpt-4o") -> ChatOpenAI:
     """Instantiate a deterministic ChatOpenAI client (temperature=0)."""
@@ -324,16 +397,41 @@ def render_sidebar() -> dict:
             "Model", options=["gpt-4o", "gpt-4", "gpt-4-turbo"], index=0
         )
 
-    with st.sidebar.expander("MySQL", expanded=True):
-        mysql_host = st.text_input("Host", value="localhost", key="mysql_host")
-        mysql_port = st.number_input(
-            "Port", value=3306, min_value=1, max_value=65535, key="mysql_port"
+    data_source = st.sidebar.radio(
+        "Data source",
+        options=["Demo dataset (no server needed)", "My MySQL database"],
+        index=0,
+        help=(
+            "The demo dataset is the same 5,000-customer e-commerce data "
+            "from the companion Jupyter notebook, loaded into a local "
+            "SQLite file. No MySQL server or credentials required."
+        ),
+    )
+    use_demo = data_source.startswith("Demo")
+
+    mysql_host = "localhost"
+    mysql_port = 3306
+    mysql_user = "root"
+    mysql_password = ""
+    mysql_db = ""
+
+    if use_demo:
+        st.sidebar.success(
+            "Using the built-in demo dataset (table: `customers`, "
+            "5,000 rows). Just add your OpenAI key and start asking.",
+            icon="✅",
         )
-        mysql_user = st.text_input("User", value="root", key="mysql_user")
-        mysql_password = st.text_input(
-            "Password", type="password", key="mysql_password"
-        )
-        mysql_db = st.text_input("Database", key="mysql_db")
+    else:
+        with st.sidebar.expander("MySQL", expanded=True):
+            mysql_host = st.text_input("Host", value="localhost", key="mysql_host")
+            mysql_port = st.number_input(
+                "Port", value=3306, min_value=1, max_value=65535, key="mysql_port"
+            )
+            mysql_user = st.text_input("User", value="root", key="mysql_user")
+            mysql_password = st.text_input(
+                "Password", type="password", key="mysql_password"
+            )
+            mysql_db = st.text_input("Database", key="mysql_db")
 
     st.sidebar.divider()
     if st.sidebar.button("Reset conversation", use_container_width=True):
@@ -343,6 +441,7 @@ def render_sidebar() -> dict:
     return {
         "openai_api_key": openai_api_key,
         "model_name": model_name,
+        "use_demo": use_demo,
         "host": mysql_host,
         "port": int(mysql_port),
         "user": mysql_user,
@@ -367,7 +466,11 @@ def render_history():
 
 
 def config_is_complete(cfg: dict) -> bool:
-    required = ("openai_api_key", "host", "user", "database")
+    if not cfg.get("openai_api_key"):
+        return False
+    if cfg.get("use_demo"):
+        return True  # demo mode only needs the OpenAI key
+    required = ("host", "user", "database")
     return all(cfg.get(k) for k in required)
 
 
@@ -385,7 +488,7 @@ def main() -> None:
 
     st.title("Conversational EDA Chatbot")
     st.caption(
-        "Ask plain-English questions about your e-commerce MySQL database. "
+        "Ask plain-English questions about your e-commerce database. "
         "Get tables, summaries, or interactive charts on demand."
     )
 
@@ -395,27 +498,44 @@ def main() -> None:
         st.session_state.messages = []
 
     if not config_is_complete(cfg):
-        st.info(
-            "Enter your OpenAI API key and MySQL connection details in the "
-            "sidebar to begin.",
-            icon="ℹ️",
-        )
+        if cfg.get("use_demo"):
+            st.info(
+                "Enter your OpenAI API key in the sidebar to begin. "
+                "The demo e-commerce dataset is ready to query.",
+                icon="ℹ️",
+            )
+        else:
+            st.info(
+                "Enter your OpenAI API key and MySQL connection details in "
+                "the sidebar to begin.",
+                icon="ℹ️",
+            )
         st.stop()
 
     # Build (cached) resources.
     try:
-        db = get_database(
-            host=cfg["host"],
-            user=cfg["user"],
-            password=cfg["password"],
-            port=cfg["port"],
-            database=cfg["database"],
-        )
+        if cfg["use_demo"]:
+            db = get_demo_database()
+        else:
+            db = get_database(
+                host=cfg["host"],
+                user=cfg["user"],
+                password=cfg["password"],
+                port=cfg["port"],
+                database=cfg["database"],
+            )
         llm = get_llm(cfg["openai_api_key"], model=cfg["model_name"])
         sql_agent = get_sql_agent(llm, db)
     except Exception as exc:
         st.error(f"Failed to initialize backend resources: {exc}")
         st.stop()
+
+    if cfg["use_demo"]:
+        st.caption(
+            "Demo mode • table `customers` (5,000 rows) • try: "
+            "*“churn rate by membership tier as a bar chart”* or "
+            "*“top 10 customers by average order value”*."
+        )
 
     render_history()
 

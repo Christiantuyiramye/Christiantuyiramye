@@ -29,7 +29,7 @@ def build_paper():
 
     story = []
     story.append(Paragraph("A Real-Time Face Recognition Based Attendance Management System", title))
-    story.append(Paragraph("Christian Tuyiramye<br/>Independent Project &mdash; 2026", author))
+    story.append(Paragraph("TUYIRAMYE Christian &amp; IGIRANEZA Justin<br/>Independent Project &mdash; 2026", author))
 
     story.append(Paragraph("Abstract", h1))
     story.append(Paragraph(
@@ -240,7 +240,7 @@ def build_poster():
     c.setFont('Helvetica-Bold', 32)
     c.drawCentredString(W/2, H - 55, "Real-Time Face Recognition Attendance System")
     c.setFont('Helvetica', 14)
-    c.drawCentredString(W/2, H - 85, "Christian Tuyiramye  -  Independent Project, 2026")
+    c.drawCentredString(W/2, H - 85, "TUYIRAMYE Christian  &  IGIRANEZA Justin   -   Independent Project, 2026")
 
     # Two columns
     col_w = (W - 60) / 2 - 10
@@ -404,155 +404,260 @@ def build_poster():
 # 3. SLIDE DECK (PDF, 16:9)
 # ============================================================================
 def build_slides():
+    """Clean white-background design, emerald accent, large readable fonts, numbered slides."""
     path = os.path.join(OUT_DIR, "presentation.pdf")
     page_size = (1280, 720)  # 16:9
     c = canvas.Canvas(path, pagesize=page_size)
     W, H = page_size
 
+    PRIMARY = colors.HexColor('#047857')      # emerald-700
+    PRIMARY_LIGHT = colors.HexColor('#d1fae5')  # emerald-100
+    ACCENT = colors.HexColor('#b45309')        # amber-700
+    INK = colors.HexColor('#111827')
+    MUTED = colors.HexColor('#6b7280')
+    LINE = colors.HexColor('#e5e7eb')
+
+    AUTHORS = "TUYIRAMYE Christian   &   IGIRANEZA Justin"
+    FOOTER_LEFT = "Face Attendance System"
+    TOTAL_SLIDES = 13
+
+    from reportlab.lib.utils import simpleSplit
+
+    state = {"n": 0}
+
+    def draw_page_chrome():
+        # Footer line + page number
+        c.setStrokeColor(LINE)
+        c.setLineWidth(0.8)
+        c.line(60, 56, W - 60, 56)
+        c.setFillColor(MUTED)
+        c.setFont('Helvetica', 12)
+        c.drawString(60, 34, FOOTER_LEFT)
+        c.drawCentredString(W/2, 34, AUTHORS)
+        c.drawRightString(W - 60, 34, f"{state['n']} / {TOTAL_SLIDES}")
+
     def title_slide(title, subtitle):
-        c.setFillColor(colors.HexColor('#0f172a'))
-        c.rect(0, 0, W, H, fill=1, stroke=0)
-        c.setFillColor(colors.HexColor('#2563eb'))
-        c.rect(0, H/2 - 4, W, 8, fill=1, stroke=0)
+        state['n'] += 1
+        # Solid emerald block on left, white on right
         c.setFillColor(colors.white)
-        c.setFont('Helvetica-Bold', 44)
-        c.drawCentredString(W/2, H/2 + 60, title)
+        c.rect(0, 0, W, H, fill=1, stroke=0)
+        c.setFillColor(PRIMARY)
+        c.rect(0, 0, 420, H, fill=1, stroke=0)
+        # Decorative bars
+        c.setFillColor(colors.HexColor('#065f46'))
+        c.rect(0, 100, 420, 12, fill=1, stroke=0)
+        c.setFillColor(ACCENT)
+        c.rect(0, 80, 420, 8, fill=1, stroke=0)
+
+        # Title block
+        c.setFillColor(INK)
+        c.setFont('Helvetica-Bold', 42)
+        # wrap if long
+        lines = simpleSplit(title, 'Helvetica-Bold', 42, W - 480)
+        ty = H/2 + 60 + (len(lines)-1)*22
+        for ln in lines:
+            c.drawString(460, ty, ln)
+            ty -= 50
+        c.setFillColor(PRIMARY)
+        c.rect(460, ty + 30, 60, 4, fill=1, stroke=0)
+        c.setFillColor(MUTED)
         c.setFont('Helvetica', 22)
-        c.drawCentredString(W/2, H/2 - 50, subtitle)
-        c.setFont('Helvetica-Oblique', 14)
-        c.setFillColor(colors.HexColor('#94a3b8'))
-        c.drawCentredString(W/2, 60, "Christian Tuyiramye   |   2026")
+        for ln in simpleSplit(subtitle, 'Helvetica', 22, W - 480):
+            c.drawString(460, ty - 18, ln)
+            ty -= 28
+
+        # Authors on emerald block
+        c.setFillColor(colors.white)
+        c.setFont('Helvetica-Bold', 22)
+        c.drawString(40, H - 140, "Presented by")
+        c.setFont('Helvetica', 20)
+        c.drawString(40, H - 175, "TUYIRAMYE Christian")
+        c.drawString(40, H - 205, "IGIRANEZA Justin")
+        c.setFont('Helvetica-Oblique', 16)
+        c.setFillColor(colors.HexColor('#a7f3d0'))
+        c.drawString(40, 80, "Independent Project   -   2026")
+
         c.showPage()
 
     def content_slide(title, items, kind='bullets'):
-        # Top bar
-        c.setFillColor(colors.HexColor('#1f2937'))
-        c.rect(0, H - 80, W, 80, fill=1, stroke=0)
+        state['n'] += 1
         c.setFillColor(colors.white)
-        c.setFont('Helvetica-Bold', 28)
-        c.drawString(60, H - 50, title)
-        # Accent
-        c.setFillColor(colors.HexColor('#2563eb'))
-        c.rect(0, H - 90, W, 6, fill=1, stroke=0)
+        c.rect(0, 0, W, H, fill=1, stroke=0)
+
+        # Slide title
+        c.setFillColor(INK)
+        c.setFont('Helvetica-Bold', 36)
+        c.drawString(60, H - 80, title)
+        # Accent underline under title
+        c.setFillColor(PRIMARY)
+        c.rect(60, H - 96, 100, 6, fill=1, stroke=0)
+        c.setFillColor(ACCENT)
+        c.rect(165, H - 96, 30, 6, fill=1, stroke=0)
+
         # Body
-        c.setFillColor(colors.HexColor('#0f172a'))
-        c.setFont('Helvetica', 20)
-        y = H - 150
-        from reportlab.lib.utils import simpleSplit
+        y = H - 160
+        body_size = 24
+        body_leading = 36
         if kind == 'bullets':
             for it in items:
-                bullet = u'•  '
-                lines = simpleSplit(bullet + it, 'Helvetica', 20, W - 160)
-                for ln in lines:
-                    c.drawString(80, y, ln)
-                    y -= 30
-                y -= 6
+                # Bullet dot
+                c.setFillColor(PRIMARY)
+                c.circle(85, y + 8, 5, fill=1, stroke=0)
+                # Text
+                c.setFillColor(INK)
+                c.setFont('Helvetica', body_size)
+                lines = simpleSplit(it, 'Helvetica', body_size, W - 200)
+                for i, ln in enumerate(lines):
+                    c.drawString(110, y, ln)
+                    y -= body_leading
+                y -= 8
         elif kind == 'kv':
-            # items: list of (k, v)
             for k, v in items:
-                c.setFillColor(colors.HexColor('#2563eb'))
+                c.setFillColor(PRIMARY)
+                c.setFont('Helvetica-Bold', 24)
+                c.drawString(85, y, k)
+                c.setFillColor(INK)
+                c.setFont('Helvetica-Bold', 26)
+                c.drawRightString(W - 85, y, v)
+                c.setStrokeColor(LINE)
+                c.setLineWidth(0.8)
+                c.line(85, y - 12, W - 85, y - 12)
+                y -= 50
+        elif kind == 'steps':
+            for i, it in enumerate(items, start=1):
+                # Numbered circle
+                c.setFillColor(PRIMARY)
+                c.circle(95, y + 10, 22, fill=1, stroke=0)
+                c.setFillColor(colors.white)
                 c.setFont('Helvetica-Bold', 22)
-                c.drawString(80, y, k)
-                c.setFillColor(colors.HexColor('#0f172a'))
-                c.setFont('Helvetica', 22)
-                c.drawRightString(W - 80, y, v)
-                c.setStrokeColor(colors.HexColor('#e5e7eb'))
-                c.line(80, y - 8, W - 80, y - 8)
-                y -= 44
-        # Footer
-        c.setFillColor(colors.HexColor('#64748b'))
-        c.setFont('Helvetica', 11)
-        c.drawString(60, 30, "Face Attendance System")
-        c.drawRightString(W - 60, 30, "github.com/Christiantuyiramye")
+                c.drawCentredString(95, y + 2, str(i))
+                # Text
+                c.setFillColor(INK)
+                c.setFont('Helvetica', body_size)
+                lines = simpleSplit(it, 'Helvetica', body_size, W - 240)
+                yy = y + 6
+                for ln in lines:
+                    c.drawString(140, yy, ln)
+                    yy -= 30
+                y -= max(60, body_leading * len(lines) + 14)
+
+        draw_page_chrome()
         c.showPage()
 
-    title_slide("Face Attendance System", "Real-time, contactless attendance using OpenCV + Flask")
+    def closing_slide(title, subtitle):
+        state['n'] += 1
+        c.setFillColor(PRIMARY)
+        c.rect(0, 0, W, H, fill=1, stroke=0)
+        # Decorative
+        c.setFillColor(colors.HexColor('#065f46'))
+        c.rect(0, H/2 - 4, W, 8, fill=1, stroke=0)
+        c.setFillColor(ACCENT)
+        c.rect(W/2 - 30, H/2 - 4, 60, 8, fill=1, stroke=0)
+
+        c.setFillColor(colors.white)
+        c.setFont('Helvetica-Bold', 60)
+        c.drawCentredString(W/2, H/2 + 60, title)
+        c.setFont('Helvetica', 26)
+        c.setFillColor(colors.HexColor('#a7f3d0'))
+        c.drawCentredString(W/2, H/2 - 60, subtitle)
+
+        c.setFont('Helvetica-Bold', 18)
+        c.setFillColor(colors.white)
+        c.drawCentredString(W/2, 80, AUTHORS)
+        c.setFont('Helvetica-Oblique', 14)
+        c.setFillColor(colors.HexColor('#a7f3d0'))
+        c.drawCentredString(W/2, 55, "Independent Project   -   2026")
+        c.showPage()
+
+    # ---- Slides ----
+    title_slide("Face Attendance System",
+                "A real-time, contactless attendance solution using a webcam, OpenCV, and Flask.")
 
     content_slide("The Problem", [
-        "Manual attendance wastes 5-10 minutes per session.",
-        "Buddy punching: easy fraud in paper / card systems.",
-        "Fingerprint readers need shared contact hardware.",
-        "Aggregating monthly reports is painful from paper logs.",
+        "Manual roll-call wastes 5 to 10 minutes every session.",
+        "Paper sign-in and ID cards make buddy punching easy.",
+        "Fingerprint scanners need shared contact hardware.",
+        "Compiling weekly or monthly reports from paper logs is slow and error-prone.",
     ])
 
     content_slide("Our Solution", [
-        "Look at the camera -> you are checked in.",
-        "Look again later -> you are checked out, hours computed.",
-        "Web dashboard for HR: employees, attendance, leave, holidays.",
-        "Runs on a standard laptop. No GPU. No dedicated hardware.",
+        "Look at the camera and you are checked in automatically.",
+        "Look at the camera again later and you are checked out, hours computed.",
+        "An HR dashboard for employees, attendance, leave and holidays.",
+        "Runs on a standard laptop with a webcam. No GPU. No special hardware.",
     ])
 
-    content_slide("Architecture", [
-        "Presentation: HTML / CSS / vanilla JS  OR  Jupyter notebook (ipywidgets).",
-        "API: Flask + 24 REST endpoints with CORS.",
-        "Recognition: OpenCV Haar + LBPH (no dlib required).",
-        "Persistence: SQLAlchemy -> SQLite (dev) / PostgreSQL (prod).",
-        "Logging: rotating file handler at logs/app.log + console.",
+    content_slide("System Architecture", [
+        "Front end: HTML and JavaScript dashboard, or a Jupyter notebook UI.",
+        "API layer: Flask serving twenty-four REST endpoints with CORS enabled.",
+        "Recognition: OpenCV Haar cascade detection and an LBPH recognizer.",
+        "Database: SQLAlchemy on SQLite for development, PostgreSQL for production.",
+        "Logging: a rotating file handler writes to logs/app.log plus the console.",
     ])
 
     content_slide("Face Recognition Pipeline", [
-        "1.  Capture a frame from webcam (640x480).",
-        "2.  Detect faces with Haar cascade.",
-        "3.  Crop and resize to 200x200 grayscale.",
-        "4.  LBPH predict -> label + distance.",
-        "5.  Accept if distance < 70  (lower = better match).",
-        "6.  Insert check_in OR set check_out + compute hours.",
-    ])
+        "Capture a single 640 by 480 frame from the webcam.",
+        "Detect faces with a Haar cascade classifier.",
+        "Crop each face and resize to 200 by 200 grayscale.",
+        "Run the LBPH recognizer, which returns a label and a distance score.",
+        "Accept the match when the distance is below 70 (lower means a closer match).",
+        "Insert a new check-in record, or close an open one and compute working hours.",
+    ], kind='steps')
 
     content_slide("Data Model", [
-        "Employee (id, name, employee_id, dept, role, encoding, is_active).",
-        "AttendanceRecord (employee_id FK, date, check_in, check_out, hours, status).",
-        "LeaveRequest (employee_id FK, type, start, end, reason, status).",
-        "Holiday (name, date UNIQUE, description).",
+        "Employee: id, name, employee_id, department, role, encoding, is_active.",
+        "AttendanceRecord: employee_id, date, check_in, check_out, hours, status.",
+        "LeaveRequest: employee_id, leave_type, start_date, end_date, status.",
+        "Holiday: name, date and description.",
     ])
 
-    content_slide("Live Features", [
-        "Webcam preview with green / red bounding boxes per face.",
-        "Per-day daily stats: present, late, absent, on leave, avg hours.",
-        "Monthly breakdown with stacked bar chart.",
-        "Per-employee summary with punctuality rate.",
-        "CSV / JSON export for any date range.",
+    content_slide("Key Features", [
+        "Live webcam preview with coloured bounding boxes for each face.",
+        "Daily stats: total present, late, absent, on leave, average working hours.",
+        "Monthly breakdown shown as a stacked bar chart.",
+        "Per-employee summary including punctuality rate.",
+        "CSV and JSON export for any date range.",
     ])
 
-    content_slide("Evaluation (10 people, 50 samples, 200 trials)", [
-        ("Detection rate", "98.5%"),
-        ("Recognition accuracy", "95.0%"),
-        ("Mean latency / frame", "168 ms"),
+    content_slide("Evaluation Results", [
+        ("Detection rate", "98.5 %"),
+        ("Recognition accuracy", "95.0 %"),
+        ("Mean latency per frame", "168 ms"),
         ("95th-percentile latency", "240 ms"),
-        ("False acceptance rate", "1.5%"),
-        ("False rejection rate", "3.5%"),
+        ("False acceptance rate", "1.5 %"),
+        ("False rejection rate", "3.5 %"),
     ], kind='kv')
 
     content_slide("Privacy and Security", [
-        "Only grayscale face crops are stored - no raw color frames.",
-        "DB connection string + SECRET_KEY from env vars.",
-        "Soft delete by default; hard delete wipes face crops.",
-        "Production checklist: HTTPS, admin auth, retention policy, consent log.",
+        "Only grayscale face crops are stored. No raw colour frames are kept.",
+        "Database URL and secret key are read from environment variables.",
+        "Soft delete is the default. A hard delete removes all stored face crops.",
+        "Production checklist: HTTPS, admin authentication, retention policy, consent log.",
     ])
 
     content_slide("Limitations", [
-        "No liveness detection: a printed photo could pass.",
-        "LBPH degrades under extreme pose / lighting.",
-        "Single camera per deployment.",
-        "Webcam access requires localhost or HTTPS in the browser version.",
+        "No liveness detection yet, so a printed photo could potentially be accepted.",
+        "LBPH accuracy drops under heavy backlight or large head turn angles.",
+        "One camera per deployment in the current version.",
+        "The browser version needs localhost or HTTPS for webcam access.",
     ])
 
     content_slide("Future Work", [
-        "Liveness via blink detection or 3D depth.",
-        "Swap LBPH for FaceNet / ArcFace embeddings behind the same API.",
-        "Mobile-first PWA for BYOD check-in.",
-        "Anomaly alerts: repeated late check-ins, very short days.",
-        "Multi-camera fan-in for large rooms.",
+        "Add liveness detection through blink or 3D depth checks.",
+        "Swap LBPH for FaceNet or ArcFace embeddings behind the same API.",
+        "Build a mobile-first PWA for self-service check-in on a phone.",
+        "Add anomaly alerts for repeated late check-ins or unusually short days.",
+        "Support multiple cameras feeding into one back end.",
     ])
 
-    content_slide("Try It", [
-        "git clone the repo, branch: claude/epic-wozniak-t6J89.",
-        "Web:  pip install -r requirements.txt  ->  python app.py  ->  http://localhost:5000.",
-        "Notebook:  jupyter notebook face_attendance.ipynb  -> run all cells.",
-        "Issues / PRs welcome.",
+    content_slide("How to Run", [
+        "Clone the repository and check out the branch claude/epic-wozniak-t6J89.",
+        "Web version: pip install -r requirements.txt, then python app.py, then open http://localhost:5000.",
+        "Notebook version: open face_attendance.ipynb in Jupyter and run all cells.",
+        "Issues and pull requests are welcome.",
     ])
 
-    title_slide("Thank you", "Questions?")
+    closing_slide("Thank You", "Questions are welcome.")
 
     c.save()
     print(f"Wrote {path}")

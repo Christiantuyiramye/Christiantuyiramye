@@ -1,0 +1,26 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# App data
+attendance.db
+*.sqlite
+*.sqlite3
+logs/
+static/faces/*.jpg
+static/faces/*.png
+
+# Env
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

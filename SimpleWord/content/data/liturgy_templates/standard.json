@@ -1,0 +1,85 @@
+{
+  "name": "Standard Service",
+  "tradition": "Protestant / Evangelical",
+  "structure": [
+    {
+      "order": 1,
+      "kind": "callToWorship",
+      "title": "Call to Worship",
+      "passageRule": {"source": "psalm", "maxVerses": 6},
+      "durationMinutes": 3
+    },
+    {
+      "order": 2,
+      "kind": "hymn",
+      "title": "Opening Hymn",
+      "hymnRule": {"mood": "praise"},
+      "durationMinutes": 5
+    },
+    {
+      "order": 3,
+      "kind": "prayer",
+      "title": "Prayer of Adoration",
+      "prompt": "Praise God for who He is — His holiness, His power, His faithfulness. Speak or write your own words of adoration.",
+      "durationMinutes": 4
+    },
+    {
+      "order": 4,
+      "kind": "confessionAndAssurance",
+      "title": "Confession & Assurance",
+      "passageRule": {"source": "gracePassage", "maxVerses": 8},
+      "prompt": "Bring honestly before God the ways you have fallen short this week, then receive His promise of forgiveness in the passage.",
+      "durationMinutes": 5
+    },
+    {
+      "order": 5,
+      "kind": "scriptureReadingOT",
+      "title": "Scripture Reading — Old Testament",
+      "passageRule": {"source": "lectionaryOT"},
+      "durationMinutes": 6
+    },
+    {
+      "order": 6,
+      "kind": "scriptureReadingGospel",
+      "title": "Scripture Reading — Gospel",
+      "passageRule": {"source": "lectionaryGospel"},
+      "durationMinutes": 6
+    },
+    {
+      "order": 7,
+      "kind": "reflection",
+      "title": "Reflection",
+      "reflectionRule": {"questionCount": {"min": 3, "max": 5}, "basedOn": "scriptureReadingGospel"},
+      "durationMinutes": 10
+    },
+    {
+      "order": 8,
+      "kind": "hymn",
+      "title": "Hymn of Response",
+      "hymnRule": {"mood": "response"},
+      "durationMinutes": 5
+    },
+    {
+      "order": 9,
+      "kind": "prayersOfThePeople",
+      "title": "Prayers of the People",
+      "prompt": "Pray through your open prayer list, and for your family, church, and country.",
+      "includesOpenPrayers": true,
+      "durationMinutes": 6
+    },
+    {
+      "order": 10,
+      "kind": "lordsPrayer",
+      "title": "The Lord's Prayer",
+      "passageRule": {"source": "fixed", "ref": "40.6.9-40.6.13"},
+      "durationMinutes": 2
+    },
+    {
+      "order": 11,
+      "kind": "benediction",
+      "title": "Benediction",
+      "passageRule": {"source": "benediction", "maxVerses": 3},
+      "durationMinutes": 2
+    }
+  ]
+}

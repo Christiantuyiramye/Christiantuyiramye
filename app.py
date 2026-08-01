@@ -245,12 +245,15 @@ def get_llm(provider: str, api_key: str, model: str):
 
 
 @st.cache_resource(show_spinner=False)
-def get_sql_agent(_llm, _db: SQLDatabase):
+def get_sql_agent(_llm, _db: SQLDatabase, cache_key: str):
     """
-    Build a ZERO_SHOT_REACT_DESCRIPTION SQL agent.
+    Build a tool-calling SQL agent.
 
-    Underscore-prefixed parameters tell Streamlit not to hash these
-    unhashable LangChain objects when caching the resource.
+    The LangChain objects (_llm, _db) are underscore-prefixed so Streamlit
+    does not try to hash them. `cache_key` is a plain string that varies
+    with the provider, model, API key and database, so switching provider
+    in the sidebar correctly rebuilds the agent instead of reusing a stale
+    one. (This is the fix for "still hitting OpenAI after switching to Groq".)
     """
     return create_sql_agent(
         llm=_llm,
@@ -447,7 +450,8 @@ def render_sidebar() -> dict:
         api_key = st.text_input(
             f"{provider.split(' ')[0]} API Key",
             value=prefilled,
-            type="password", key="llm_api_key",
+            type="password",
+            key=f"api_key_{provider}",  # per-provider so keys never cross over
         )
         if prefilled:
             st.caption(f"Loaded from {env_name}.")
@@ -606,6 +610,7 @@ def main() -> None:
     try:
         if cfg["use_demo"]:
             db = get_demo_database()
+            db_id = "demo"
         else:
             db = get_database(
                 host=cfg["host"],
@@ -614,13 +619,23 @@ def main() -> None:
                 port=cfg["port"],
                 database=cfg["database"],
             )
+            db_id = f"{cfg['host']}:{cfg['port']}/{cfg['database']}"
         llm = get_llm(cfg["provider"], cfg["api_key"], cfg["model_name"])
-        sql_agent = get_sql_agent(llm, db)
+        # Cache key ties the agent to this exact provider/model/key/db so a
+        # sidebar change rebuilds the agent instead of reusing a stale one.
+        cache_key = "|".join([
+            cfg["provider"], cfg["model_name"],
+            str(hash(cfg["api_key"])), db_id,
+        ])
+        sql_agent = get_sql_agent(llm, db, cache_key)
     except Exception as exc:
         st.error(friendly_error_message(exc))
         with st.expander("Technical details"):
             st.code(str(exc))
         st.stop()
+
+    # Visible confirmation of which model is actually answering.
+    st.caption(f"🧠 Active model: **{cfg['provider']}** · `{cfg['model_name']}`")
 
     if cfg["use_demo"]:
         st.caption(

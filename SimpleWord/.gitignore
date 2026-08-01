@@ -3,3 +3,4 @@ content/output/
 __pycache__/
 *.pyc
 .DS_Store
+app/assets/bible.sqlite

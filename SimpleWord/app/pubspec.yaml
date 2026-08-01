@@ -1,0 +1,34 @@
+name: simple_word
+description: "Simple Word - a simple-English Bible, personal first."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.12.0
+
+# Dependency policy (DECISIONS.md): every package is justified in writing.
+#   sqlite3               - reads the bundled read-only bible.sqlite (FFI, no
+#                           platform channels; identical on Android/Windows/tests)
+#   sqlite3_flutter_libs  - bundles the native SQLite (with FTS5) on Android/
+#                           Windows so we never depend on the OS's build
+#   path_provider         - locate the writable directory the DB is copied to
+#   path                  - join paths portably
+#   shared_preferences    - tiny key-value store: theme, font size, last-read
+dependencies:
+  flutter:
+    sdk: flutter
+  sqlite3: ^2.9.0
+  sqlite3_flutter_libs: ^0.5.41
+  path_provider: ^2.1.5
+  path: ^1.9.0
+  shared_preferences: ^2.5.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/bible.sqlite

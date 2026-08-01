@@ -14,12 +14,12 @@ or change each one before Phase 1 begins.**
 
 | # | Question | Proposed default | Status |
 |---|---|---|---|
-| 1 | App name | Working title **"Simple Word"** (subtitle carrying "Bible"), bundle ID `com.christiantuyiramye.simpleword` | ⏳ awaiting owner |
+| 1 | App name | Working title **"Simple Word"** (subtitle carrying "Bible"), application ID `com.christiantuyiramye.simpleword` | ⏳ awaiting owner |
 | 2 | Free or paid | **Free, no IAP, no ads.** Simplest licensing posture and truest to "personal first" | ⏳ awaiting owner |
-| 3 | Solo or family sharing | **Solo** — CloudKit private database only | ⏳ awaiting owner |
-| 4 | Monthly review generation | **Option (c) hybrid** as the brief recommends: deterministic Part 1 always; on-device Foundation Models when available; bundled question bank as final fallback. No server proxy in v1 (nobody has volunteered to host/pay for one) | ⏳ awaiting owner |
+| 3 | Solo or family sharing | **Solo** — single-user data, private sync only | ⏳ awaiting owner |
+| 4 | Monthly review generation | **Deterministic Part 1 + bundled question bank** first; generated questions later behind the `ReviewGenerator` interface | ⏳ awaiting owner |
 | 5 | Liturgical tradition | **Broadly Protestant/evangelical**, exactly as structured in the brief §F6 | ⏳ awaiting owner |
-| 6 | Xcode + Mac availability | **Unconfirmed.** Phase 1 cannot produce a build without it | ⏳ awaiting owner |
+| 6 | ~~Xcode + Mac availability~~ | **Resolved by D-011**: owner has a Windows desktop and an Android phone, no Mac. Platform pivoted to Flutter; no Xcode needed | ✅ resolved 2026-08-01 |
 | 7 | Language | **English only in v1.** Kinyarwanda/Swahili sourcing not started | ⏳ awaiting owner |
 
 ---
@@ -125,3 +125,42 @@ The four bundled plans are generated deterministically from the canon
 (contiguous chapters, even day-sizing). The integrity script verifies each
 plan's coverage claim exactly (John 21/21, Psalms 150/150, complete NT,
 complete Bible).
+
+---
+
+## Platform pivot
+
+### D-011: Target platform is Flutter (Android + Windows), not iOS
+**Date:** 2026-08-01. **Decided by:** owner (Christian), confirming the
+recommended option.
+
+The original brief targeted iOS/SwiftUI, but the owner's actual devices are
+an **Android phone and a Windows desktop** — no Mac, no iPhone. Xcode
+requires a Mac, so the iOS plan was unbuildable, and "personal first" means
+the app must live on the owner's own devices. Chosen: **Flutter**, one
+codebase shipping to Android (primary, daily use) and Windows desktop
+(secondary), with an iOS path preserved for the future if Apple hardware
+ever arrives.
+
+Consequences (technology mapping from the brief §3):
+- SwiftUI → Flutter widgets; MVVM stays (view models as `ChangeNotifier`/
+  streams, repository layer unchanged in spirit).
+- SwiftData → **Drift or raw sqlite3** for user data; `bible.sqlite` is
+  bundled read-only exactly as built in Phase 0 (`sqlite3` package,
+  FFI-based, works identically on Android/Windows/Linux — and in tests).
+- CloudKit sync → **deferred**. v1 is fully on-device with a local
+  export/backup file. A cross-device sync solution (e.g. user's own Google
+  Drive backup) is a later, opt-in decision — nothing phones home.
+- AVSpeechSynthesizer → platform TTS via `flutter_tts` (Android natively;
+  Windows SAPI).
+- WidgetKit → Android home-screen widget (`home_widget`) in the habit
+  phase; no Windows equivalent.
+- Local notifications → `flutter_local_notifications`.
+- App Store checklist (§10) → Google Play (one-time $25) + Windows
+  distribution (Microsoft Store or direct installer). Same content-licence
+  diligence applies.
+- The brief's dependency rule ("none by default; justify every package in
+  writing") continues: each Flutter package added is recorded here with its
+  reason.
+
+Phase 0 output is unaffected: `bible.sqlite` is platform-neutral by design.

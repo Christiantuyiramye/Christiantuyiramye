@@ -1,0 +1,85 @@
+{
+  "name": "Communion / Lord's Supper",
+  "tradition": "Protestant / Evangelical",
+  "structure": [
+    {
+      "order": 1,
+      "kind": "callToWorship",
+      "title": "Call to Worship",
+      "passageRule": {"source": "psalm", "maxVerses": 6},
+      "durationMinutes": 3
+    },
+    {
+      "order": 2,
+      "kind": "hymn",
+      "title": "Opening Hymn",
+      "hymnRule": {"mood": "praise"},
+      "durationMinutes": 5
+    },
+    {
+      "order": 3,
+      "kind": "confessionAndAssurance",
+      "title": "Confession & Assurance",
+      "passageRule": {"source": "gracePassage", "maxVerses": 8},
+      "prompt": "Examine yourself before coming to the table (1 Corinthians 11:28). Confess honestly, then receive God's assurance of pardon.",
+      "durationMinutes": 5
+    },
+    {
+      "order": 4,
+      "kind": "scriptureReadingGospel",
+      "title": "Scripture Reading — Gospel",
+      "passageRule": {"source": "lectionaryGospel"},
+      "durationMinutes": 6
+    },
+    {
+      "order": 5,
+      "kind": "reflection",
+      "title": "Reflection",
+      "reflectionRule": {"questionCount": {"min": 3, "max": 4}, "basedOn": "scriptureReadingGospel"},
+      "durationMinutes": 8
+    },
+    {
+      "order": 6,
+      "kind": "wordsOfInstitution",
+      "title": "Words of Institution",
+      "passageRule": {"source": "fixed", "ref": "46.11.23-46.11.26"},
+      "durationMinutes": 3
+    },
+    {
+      "order": 7,
+      "kind": "communion",
+      "title": "The Lord's Supper",
+      "prompt": "Take the bread and the cup with thanksgiving, remembering the Lord's death until He comes.",
+      "durationMinutes": 6
+    },
+    {
+      "order": 8,
+      "kind": "hymn",
+      "title": "Hymn of Thanksgiving",
+      "hymnRule": {"mood": "response"},
+      "durationMinutes": 5
+    },
+    {
+      "order": 9,
+      "kind": "prayersOfThePeople",
+      "title": "Prayers of the People",
+      "prompt": "Pray through your open prayer list with thanksgiving.",
+      "includesOpenPrayers": true,
+      "durationMinutes": 5
+    },
+    {
+      "order": 10,
+      "kind": "lordsPrayer",
+      "title": "The Lord's Prayer",
+      "passageRule": {"source": "fixed", "ref": "40.6.9-40.6.13"},
+      "durationMinutes": 2
+    },
+    {
+      "order": 11,
+      "kind": "benediction",
+      "title": "Benediction",
+      "passageRule": {"source": "benediction", "maxVerses": 3},
+      "durationMinutes": 2
+    }
+  ]
+}

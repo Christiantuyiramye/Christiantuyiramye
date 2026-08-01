@@ -1,0 +1,56 @@
+{
+  "name": "Short Service (20 minutes)",
+  "tradition": "Protestant / Evangelical",
+  "structure": [
+    {
+      "order": 1,
+      "kind": "callToWorship",
+      "title": "Call to Worship",
+      "passageRule": {"source": "psalm", "maxVerses": 4},
+      "durationMinutes": 2
+    },
+    {
+      "order": 2,
+      "kind": "hymn",
+      "title": "Hymn",
+      "hymnRule": {"mood": "praise"},
+      "durationMinutes": 4
+    },
+    {
+      "order": 3,
+      "kind": "scriptureReadingGospel",
+      "title": "Scripture Reading — Gospel",
+      "passageRule": {"source": "lectionaryGospel"},
+      "durationMinutes": 5
+    },
+    {
+      "order": 4,
+      "kind": "reflection",
+      "title": "Reflection",
+      "reflectionRule": {"questionCount": {"min": 2, "max": 3}, "basedOn": "scriptureReadingGospel"},
+      "durationMinutes": 5
+    },
+    {
+      "order": 5,
+      "kind": "prayersOfThePeople",
+      "title": "Prayers of the People",
+      "prompt": "Pray through your open prayer list.",
+      "includesOpenPrayers": true,
+      "durationMinutes": 2
+    },
+    {
+      "order": 6,
+      "kind": "lordsPrayer",
+      "title": "The Lord's Prayer",
+      "passageRule": {"source": "fixed", "ref": "40.6.9-40.6.13"},
+      "durationMinutes": 1
+    },
+    {
+      "order": 7,
+      "kind": "benediction",
+      "title": "Benediction",
+      "passageRule": {"source": "benediction", "maxVerses": 2},
+      "durationMinutes": 1
+    }
+  ]
+}

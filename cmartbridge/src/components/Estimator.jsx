@@ -1,19 +1,25 @@
 import { useMemo, useState } from 'react'
 import { useLang, useT } from '../i18n.js'
-import { CATEGORIES, landedCost, fmtRwf } from '../lib/pricing.js'
+import { CATEGORIES, CONFIG, landedCost, fmtRwf } from '../lib/pricing.js'
 import { CATEGORY_LABELS } from '../data/catalog.js'
+import { useFx } from '../fx.js'
 
 export default function Estimator() {
   const t = useT()
   const { lang } = useLang()
+  const fx = useFx()
   const [priceKrw, setPriceKrw] = useState(10000)
   const [weightG, setWeightG] = useState(200)
   const [category, setCategory] = useState('skincare')
   const [showBreakdown, setShowBreakdown] = useState(false)
 
   const cost = useMemo(
-    () => landedCost(Number(priceKrw) || 0, Number(weightG) || 0, category),
-    [priceKrw, weightG, category],
+    () =>
+      landedCost(Number(priceKrw) || 0, Number(weightG) || 0, category, {
+        ...CONFIG,
+        krwToRwf: fx.rate,
+      }),
+    [priceKrw, weightG, category, fx.rate],
   )
 
   const rows = [
@@ -86,6 +92,10 @@ export default function Estimator() {
             </table>
           )}
           <p className="fine-print">{t('estDisclaimer')}</p>
+          <p className="fine-print">
+            {t(fx.loading ? 'fxChecking' : fx.source === 'fallback' ? 'fxFallback' : 'fxLive')}
+            {' · '}1 KRW ≈ {fx.rate.toFixed(3)} RWF
+          </p>
         </div>
       </div>
     </section>

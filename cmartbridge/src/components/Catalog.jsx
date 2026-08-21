@@ -1,23 +1,32 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useLang, useT } from '../i18n.js'
 import { CATALOG, CATEGORY_LABELS } from '../data/catalog.js'
-import { landedCost, fmtRwf } from '../lib/pricing.js'
+import { CONFIG, landedCost, fmtRwf } from '../lib/pricing.js'
 import { waLink } from '../data/site.js'
 import { useReveal } from '../hooks/useReveal.js'
+import { useFx } from '../fx.js'
+import { useCart } from '../cart.js'
 
 export default function Catalog() {
   const t = useT()
   const { lang } = useLang()
+  const fx = useFx()
+  const cart = useCart()
   const [filter, setFilter] = useState('all')
+  const [addedId, setAddedId] = useState(null)
   const ref = useReveal()
 
   const items = useMemo(
     () =>
       CATALOG.filter((p) => filter === 'all' || p.category === filter).map((p) => ({
         ...p,
-        doorPrice: landedCost(p.priceKrw, p.weightG, p.category).doorPrice,
+        doorPrice: landedCost(p.priceKrw, p.weightG, p.category, {
+          ...CONFIG,
+          krwToRwf: fx.rate,
+        }).doorPrice,
       })),
-    [filter],
+    [filter, fx.rate],
   )
 
   return (
@@ -44,18 +53,31 @@ export default function Catalog() {
         {items.map((p) => (
           <article className="product" key={p.id}>
             <span className="product-cat">{CATEGORY_LABELS[p.category][lang]}</span>
-            <h3>{p.name}</h3>
+            <Link to={`/product/${p.id}`}>
+              <h3>{p.name}</h3>
+            </Link>
             <p className="product-price">
               {fmtRwf(p.doorPrice)} <small>· {t('estDoorPrice')}</small>
             </p>
-            <a
-              className="btn btn-small"
-              href={waLink(`Muraho CmartBridge! I want to order: ${p.name} (~${fmtRwf(p.doorPrice)}).`)}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {t('requestItem')}
-            </a>
+            <div className="product-actions">
+              <button
+                className="btn btn-small"
+                onClick={() => {
+                  cart.add(p.id, 1)
+                  setAddedId(p.id)
+                }}
+              >
+                {addedId === p.id ? t('pdpAdded') : t('pdpAddToCart')}
+              </button>
+              <a
+                className="link-btn"
+                href={waLink(`Muraho CmartBridge! I want to order: ${p.name} (~${fmtRwf(p.doorPrice)}).`)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {t('requestItem')}
+              </a>
+            </div>
           </article>
         ))}
       </div>

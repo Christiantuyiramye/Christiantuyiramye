@@ -2,20 +2,28 @@
   "name": "cmartbridge-rwanda",
   "private": true,
   "version": "0.1.0",
-  "description": "CmartBridge Rwanda — Korea to Kigali sourcing & delivery. Phase 1 one-page site with request form.",
+  "description": "CmartBridge Rwanda — Korea to Kigali sourcing & delivery. Product catalog, cart, and MTN MoMo checkout.",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently -n web,api -c blue,green \"vite\" \"node --watch server/index.js\"",
+    "dev:web": "vite",
+    "dev:api": "node --watch server/index.js",
     "build": "vite build",
     "preview": "vite preview",
+    "start": "node server/index.js",
     "catalog:print": "node scripts/print-catalog.mjs"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.6.2",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^10.0.5",
     "vite": "^6.0.7"
   }
 }

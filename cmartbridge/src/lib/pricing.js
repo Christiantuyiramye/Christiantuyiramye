@@ -7,12 +7,14 @@
 //   - ~5% buffer on product+shipping covers KRW→RWF swings and loss/reship.
 //
 // ALL RATES BELOW ARE PLACEHOLDERS TO VERIFY BEFORE LAUNCH:
-//   - FX: refresh weekly (BNR reference rate).
+//   - FX: krwToRwf below is the OFFLINE FALLBACK only — the live app fetches the
+//     real-time rate client-side (see src/hooks/useFxRate.js) and overrides it.
+//     Keep this fallback roughly current by hand in case the live fetch ever fails.
 //   - Duty: EAC Common External Tariff, verify per category with RRA.
 //   - Shipping: verify current Korea Post EMS rates to Rwanda.
 
 export const CONFIG = {
-  krwToRwf: 1.05, // 1 KRW in RWF — refresh weekly
+  krwToRwf: 1.05, // 1 KRW in RWF — offline fallback, overridden by the live FX rate
   commissionRate: 0.3, // 30% on product price
   bufferRate: 0.05, // FX + loss buffer on (product + shipping)
   vatRate: 0.18, // Rwanda VAT

@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom'
 import { useLang, useT } from '../i18n.js'
+import CartBadge from './CartBadge.jsx'
 
 export default function Header() {
   const { lang, setLang } = useLang()
@@ -6,12 +8,12 @@ export default function Header() {
 
   return (
     <header className="header">
-      <a className="brand" href="#top">
+      <Link className="brand" to="/">
         <span className="brand-mark">Cmart</span>Bridge
         <span className="brand-flag" aria-hidden="true">
           🇰🇷→🇷🇼
         </span>
-      </a>
+      </Link>
       <span className="header-tagline">{t('tagline')}</span>
       <div className="lang-toggle" role="group" aria-label="Language">
         <button
@@ -29,6 +31,7 @@ export default function Header() {
           RW
         </button>
       </div>
+      <CartBadge />
     </header>
   )
 }

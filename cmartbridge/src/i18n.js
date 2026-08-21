@@ -21,13 +21,13 @@ export const STRINGS = {
     rw: 'Tumiza icyo ushaka cyose mu Bukoreya. Tukikugezaho ku muryango wawe i Kigali.',
   },
   heroSub: {
-    en: 'K-beauty, K-pop merch, phone & fashion accessories — bought in Korea by a real person, quality-checked, and delivered in 2–4 weeks. One all-in price. Pay with MTN MoMo or Airtel Money.',
-    rw: 'K-beauty, ibya K-pop, ibikoresho bya telefoni n’imitako — bigurwa mu Bukoreya n’umuntu nyawe, bikagenzurwa, bikakugeraho mu byumweru 2–4. Igiciro kimwe kirimo byose. Wishyura ukoresheje MTN MoMo cyangwa Airtel Money.',
+    en: 'K-beauty, K-pop merch, phone & fashion accessories — bought in Korea by a real person, quality-checked, and delivered in 2–4 weeks. One all-in price. Pay instantly with MTN MoMo, or Airtel Money/bank transfer via WhatsApp.',
+    rw: 'K-beauty, ibya K-pop, ibikoresho bya telefoni n’imitako — bigurwa mu Bukoreya n’umuntu nyawe, bikagenzurwa, bikakugeraho mu byumweru 2–4. Igiciro kimwe kirimo byose. Ishyura ako kanya na MTN MoMo, cyangwa Airtel Money/banki kuri WhatsApp.',
   },
   ctaOrder: { en: 'Order on WhatsApp', rw: 'Tumiza kuri WhatsApp' },
   ctaCatalog: { en: 'See the catalog', rw: 'Reba ibicuruzwa' },
   allInBadge: { en: 'One all-in price — no surprise customs bills', rw: 'Igiciro kimwe — nta yandi mafaranga y’ikumva' },
-  momoBadge: { en: 'MTN MoMo & Airtel Money', rw: 'MTN MoMo na Airtel Money' },
+  momoBadge: { en: 'Instant MTN MoMo checkout', rw: 'Kwishyura ako kanya na MTN MoMo' },
   photoBadge: { en: 'Photo proof before shipping', rw: 'Ifoto y’icyaguzwe mbere yo koherezwa' },
 
   // Why us
@@ -39,8 +39,8 @@ export const STRINGS = {
   },
   why2t: { en: 'Pay with mobile money', rw: 'Yishyura na mobile money' },
   why2d: {
-    en: 'No Visa or Mastercard needed. MTN MoMo and Airtel Money, paid in RWF.',
-    rw: 'Ntukeneye Visa cyangwa Mastercard. MTN MoMo na Airtel Money, mu mafaranga y’u Rwanda.',
+    en: 'No Visa or Mastercard needed. Pay instantly with MTN MoMo, or Airtel Money/bank transfer via WhatsApp — all in RWF.',
+    rw: 'Ntukeneye Visa cyangwa Mastercard. Ishyura ako kanya na MTN MoMo, cyangwa Airtel Money/banki kuri WhatsApp — byose mu mafaranga y’u Rwanda.',
   },
   why3t: { en: 'One honest price', rw: 'Igiciro kimwe kizwi' },
   why3d: {
@@ -121,6 +121,9 @@ export const STRINGS = {
     en: 'Estimate only — duty and shipping vary by item. The WhatsApp quote is final and fully guaranteed.',
     rw: 'Ni ikigereranyo — imisoro n’ubwikorezi biterwa n’igicuruzwa. Igiciro cya nyuma ni icyo tukwemereza kuri WhatsApp.',
   },
+  fxChecking: { en: 'Checking live exchange rate…', rw: 'Turi kureba igiciro cy’ivunjisha…' },
+  fxLive: { en: 'Live exchange rate', rw: 'Igiciro cy’ivunjisha (kya vuba)' },
+  fxFallback: { en: 'Offline fallback rate', rw: 'Igiciro gishyizweho (nta interineti)' },
 
   // Request form
   reqTitle: { en: 'Request anything from Korea', rw: 'Saba icyo ushaka cyose mu Bukoreya' },
@@ -177,4 +180,77 @@ export const STRINGS = {
     en: 'Phase 1: Kigali only · WhatsApp & Instagram ordering · registered with RDB',
     rw: 'Icyiciro 1: Kigali gusa · gutumiza kuri WhatsApp na Instagram',
   },
+
+  // Cart / product page / checkout / payment — not yet reviewed by a native speaker,
+  // same caveat as the rest of this file.
+  cartAria: { en: 'Cart', rw: 'Igikapu' },
+  pdpBack: { en: '← Back to catalog', rw: '← Subira ku bicuruzwa' },
+  pdpAddToCart: { en: 'Add to cart', rw: 'Shyira mu gikapu' },
+  pdpAdded: { en: 'Added ✓', rw: 'Byashyizwemo ✓' },
+  pdpBuyNow: { en: 'Buy now', rw: 'Gura nonaha' },
+  pdpAsk: { en: 'Ask a question on WhatsApp', rw: 'Baza ikibazo kuri WhatsApp' },
+
+  cartTitle: { en: 'Your cart', rw: 'Igikapu cyawe' },
+  cartEmpty: { en: 'Your cart is empty.', rw: 'Igikapu cyawe kirimo ubusa.' },
+  cartBrowse: { en: 'Browse the catalog', rw: 'Reba ibicuruzwa' },
+  cartRemove: { en: 'Remove', rw: 'Kuraho' },
+  cartSubtotal: { en: 'Subtotal', rw: 'Igiteranyo' },
+  cartCheckout: { en: 'Checkout', rw: 'Kwishyura' },
+  cartFxNote: {
+    en: 'The final price is confirmed at payment — the exchange rate can shift slightly between browsing and checkout.',
+    rw: 'Igiciro nyacyo cyemezwa igihe cyo kwishyura — igiciro cy’ivunjisha gishobora guhinduka gato.',
+  },
+
+  coTitle: { en: 'Checkout', rw: 'Kwishyura' },
+  coName: { en: 'Your name', rw: 'Izina ryawe' },
+  coPhone: { en: 'Phone number', rw: 'Nimero ya telefoni' },
+  coPhoneHint: {
+    en: 'MTN number for MoMo payment (e.g. 078xxxxxxx).',
+    rw: 'Nimero ya MTN yo kwishyura na MoMo (urugero 078xxxxxxx).',
+  },
+  coNote: { en: 'Delivery note (optional)', rw: 'Ubutumwa ku gutanga (bidasabwa)' },
+  coPayMethod: { en: 'Payment method', rw: 'Uburyo bwo kwishyura' },
+  coPayMomo: { en: 'Pay now with MTN MoMo', rw: 'Ishyura ubu na MTN MoMo' },
+  coPayMomoSub: {
+    en: 'Instant — you’ll get a payment prompt on your phone.',
+    rw: 'Ako kanya — uzabona ubutumwa bwo kwishyura kuri telefoni yawe.',
+  },
+  coPayManual: { en: 'Airtel Money / bank transfer', rw: 'Airtel Money / banki' },
+  coPayManualSub: {
+    en: 'Confirm your order on WhatsApp, then pay and send a screenshot.',
+    rw: 'Emeza itumiza kuri WhatsApp, hanyuma wishyure wohereze ifoto.',
+  },
+  coSubmitMomo: { en: 'Pay with MTN MoMo', rw: 'Ishyura na MTN MoMo' },
+  coSubmitManual: { en: 'Confirm order on WhatsApp', rw: 'Emeza itumiza kuri WhatsApp' },
+
+  payPending: {
+    en: 'Check your phone and approve the MTN MoMo payment prompt…',
+    rw: 'Reba kuri telefoni yawe wemeze ubutumwa bwa MTN MoMo…',
+  },
+  payFailed: { en: 'Payment did not go through.', rw: 'Kwishyura ntibyakunze.' },
+  payTimeout: { en: 'This is taking longer than usual.', rw: 'Ibi biratinda kurusha uko bisanzwe.' },
+  payRetry: { en: 'Try again', rw: 'Ongera ugerageze' },
+  payAlreadyPaid: {
+    en: 'I already paid — notify CmartBridge',
+    rw: 'Nishyuye — menyesha CmartBridge',
+  },
+  paySwitchManual: { en: 'Pay with Airtel/bank instead', rw: 'Ishyura na Airtel/banki ahubwo' },
+
+  ocTitle: { en: 'Order confirmed', rw: 'Itumiza ryemejwe' },
+  ocSendWhatsapp: {
+    en: 'Send my order to CmartBridge on WhatsApp',
+    rw: 'Ohereza itumiza kuri CmartBridge kuri WhatsApp',
+  },
+  ocNextSteps: {
+    en: 'We’ll send you WhatsApp updates as your order moves: purchased, shipped, arrived, and delivered.',
+    rw: 'Tuzakoherereza ubutumwa kuri WhatsApp uko itumiza rigenda: kiguzwe, cyoherejwe, kigeze, kigejejwe.',
+  },
+  ocRefLabel: { en: 'Reference', rw: 'Nimero y’itumiza' },
+  ocFallback: {
+    en: 'We couldn’t find this order — if you just paid, check WhatsApp or contact us.',
+    rw: 'Ntitwabashije kubona iri tumiza — niba wamaze kwishyura, reba WhatsApp cyangwa utwandikire.',
+  },
+
+  notFoundTitle: { en: 'Page not found', rw: 'Iyi paji ntiboneka' },
+  notFoundBack: { en: 'Back to home', rw: 'Subira ahabanza' },
 }

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useLang, useT } from '../i18n.js'
 import { CATALOG, CATEGORY_LABELS } from '../data/catalog.js'
 import { CONFIG, landedCost, fmtRwf } from '../lib/pricing.js'
@@ -13,8 +13,18 @@ export default function Catalog() {
   const { lang } = useLang()
   const fx = useFx()
   const cart = useCart()
-  const [filter, setFilter] = useState('all')
   const [addedId, setAddedId] = useState(null)
+  // The category lives in the URL so the Products menu can link straight to one.
+  const [searchParams, setSearchParams] = useSearchParams()
+  const requested = searchParams.get('category')
+  const filter = requested && CATEGORY_LABELS[requested] ? requested : 'all'
+
+  const setFilter = (key) => {
+    const next = new URLSearchParams(searchParams)
+    if (key === 'all') next.delete('category')
+    else next.set('category', key)
+    setSearchParams(next, { replace: true, preventScrollReset: true })
+  }
   const ref = useReveal()
 
   const items = useMemo(

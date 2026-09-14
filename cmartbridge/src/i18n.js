@@ -24,6 +24,33 @@ export const STRINGS = {
     en: 'K-beauty, K-pop merch, phone & fashion accessories — bought in Korea by a real person, quality-checked, and delivered in 2–4 weeks. One all-in price. Pay instantly with MTN MoMo, or Airtel Money/bank transfer via WhatsApp.',
     rw: 'K-beauty, ibya K-pop, ibikoresho bya telefoni n’imitako — bigurwa mu Bukoreya n’umuntu nyawe, bikagenzurwa, bikakugeraho mu byumweru 2–4. Igiciro kimwe kirimo byose. Ishyura ako kanya na MTN MoMo, cyangwa Airtel Money/banki kuri WhatsApp.',
   },
+  // Navigation
+  navPrimary: { en: 'Main navigation', rw: 'Ibikubiyemo' },
+  navLanguage: { en: 'Language', rw: 'Ururimi' },
+  navMenu: { en: 'Open menu', rw: 'Fungura menu' },
+  navClose: { en: 'Close menu', rw: 'Funga menu' },
+  navWhy: { en: 'Why CmartBridge', rw: 'Kuki CmartBridge' },
+  navWhyUs: { en: 'Why us', rw: 'Impamvu yacu' },
+  navWhyUsDesc: {
+    en: 'Bought in Korea by a real person',
+    rw: 'Bigurwa mu Bukoreya n’umuntu nyawe',
+  },
+  navHow: { en: 'How it works', rw: 'Uko bikorwa' },
+  navHowDesc: {
+    en: 'From payment to your door in 2–4 weeks',
+    rw: 'Kuva wishyuye kugeza bikugezeho mu byumweru 2–4',
+  },
+  navPromises: { en: 'Our promises', rw: 'Ibyo twiyemeza' },
+  navPromisesDesc: {
+    en: 'Reship or full refund, every parcel tracked',
+    rw: 'Gusubizwa byose, buri paki ikurikiranwa',
+  },
+  navProducts: { en: 'Products', rw: 'Ibicuruzwa' },
+  navAllProducts: { en: 'All products', rw: 'Ibicuruzwa byose' },
+  navAllProductsDesc: { en: 'The full starter catalog', rw: 'Urutonde rwose' },
+  navPricing: { en: 'Pricing', rw: 'Ibiciro' },
+  navRequest: { en: 'Request an item', rw: 'Saba igicuruzwa' },
+
   ctaOrder: { en: 'Order on WhatsApp', rw: 'Tumiza kuri WhatsApp' },
   ctaCatalog: { en: 'See the catalog', rw: 'Reba ibicuruzwa' },
   allInBadge: { en: 'One all-in price — no surprise customs bills', rw: 'Igiciro kimwe — nta yandi mafaranga y’ikumva' },

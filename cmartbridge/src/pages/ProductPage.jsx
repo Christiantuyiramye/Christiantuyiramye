@@ -49,69 +49,85 @@ export default function ProductPage() {
     navigate('/checkout')
   }
 
+  const categoryLabel = CATEGORY_LABELS[product.category][lang]
+
   return (
     <section className="section product-detail">
-      <Link className="link-btn" to="/">
-        {t('pdpBack')}
-      </Link>
+      <nav className="breadcrumbs" aria-label="Breadcrumb">
+        <Link to="/">{t('navHome')}</Link>
+        <Link to={`/?category=${product.category}#catalog`}>{categoryLabel}</Link>
+        <span aria-current="page">{product.name}</span>
+      </nav>
 
-      <div className={`pdp-media cat-tile cat--${product.category}`}>
-        <Icon name={product.category} strokeWidth={1.4} />
+      <div className="pdp-grid">
+        <div className="pdp-media cat-tile">
+          <Icon name={product.category} strokeWidth={1.2} />
+        </div>
+
+        <div className="pdp-info">
+          <span className="pdp-category">
+            <span className="pdp-category-icon">
+              <Icon name={product.category} />
+            </span>
+            {categoryLabel}
+          </span>
+          <h1>{product.name}</h1>
+          <p className="pdp-price">{fmtRwf(cost.doorPrice)}</p>
+          <p className="pdp-price-note">{t('pdpAllIn')}</p>
+
+          <label className="qty">
+            {t('reqQty')}
+            <input
+              type="number"
+              min="1"
+              max={MAX_QTY_PER_LINE}
+              value={qty}
+              onChange={(e) => setQty(e.target.value)}
+            />
+          </label>
+
+          <div className="product-detail-actions">
+            <button className="btn btn-primary" onClick={handleBuyNow}>
+              <Icon name="bag" />
+              {t('pdpBuyNow')}
+            </button>
+            <button className="btn btn-ghost" onClick={handleAdd}>
+              {added ? t('pdpAdded') : t('pdpAddToCart')}
+            </button>
+          </div>
+
+          <p className="pdp-delivery">
+            <Icon name="truck" />
+            {t('pdpDelivery')}
+          </p>
+
+          <button className="link-btn" onClick={() => setShowBreakdown((v) => !v)}>
+            {showBreakdown ? t('estHide') : t('estBreakdown')}
+          </button>
+
+          {showBreakdown && (
+            <table className="breakdown">
+              <tbody>
+                {rows.map(([key, value]) => (
+                  <tr key={key}>
+                    <td>{t(key)}</td>
+                    <td>{fmtRwf(value)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+          <a
+            className="link-btn pdp-ask"
+            href={waLink(`Muraho CmartBridge! I have a question about: ${product.name}.`)}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {t('pdpAsk')}
+          </a>
+        </div>
       </div>
-
-      <span className="product-cat">{CATEGORY_LABELS[product.category][lang]}</span>
-      <h1>{product.name}</h1>
-      <p className="product-price">
-        {fmtRwf(cost.doorPrice)} <small>· {t('estDoorPrice')}</small>
-      </p>
-
-      <label className="qty">
-        {t('reqQty')}
-        <input
-          type="number"
-          min="1"
-          max={MAX_QTY_PER_LINE}
-          value={qty}
-          onChange={(e) => setQty(e.target.value)}
-        />
-      </label>
-
-      <div className="product-detail-actions">
-        <button className="btn btn-primary" onClick={handleBuyNow}>
-          {t('pdpBuyNow')}
-        </button>
-        <button className="btn btn-ghost" onClick={handleAdd}>
-          {added ? t('pdpAdded') : t('pdpAddToCart')}
-        </button>
-      </div>
-
-      <button className="link-btn" onClick={() => setShowBreakdown((v) => !v)}>
-        {showBreakdown ? t('estHide') : t('estBreakdown')}
-      </button>
-
-      {showBreakdown && (
-        <table className="breakdown">
-          <tbody>
-            {rows.map(([key, value]) => (
-              <tr key={key}>
-                <td>{t(key)}</td>
-                <td>{fmtRwf(value)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-
-      <p className="fine-print">
-        <a
-          className="link-btn"
-          href={waLink(`Muraho CmartBridge! I have a question about: ${product.name}.`)}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {t('pdpAsk')}
-        </a>
-      </p>
     </section>
   )
 }

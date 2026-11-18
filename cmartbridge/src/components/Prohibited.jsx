@@ -1,5 +1,6 @@
 import { useT } from '../i18n.js'
 import { useReveal } from '../hooks/useReveal.js'
+import Icon from './Icon.jsx'
 
 const ITEMS = ['prohib1', 'prohib2', 'prohib3', 'prohib4', 'prohib5']
 
@@ -14,7 +15,10 @@ export default function Prohibited() {
       <ul className="prohibited-list reveal" ref={ref}>
         {ITEMS.map((key) => (
           <li key={key}>
-            <span aria-hidden="true">🚫</span> {t(key)}
+            <span className="prohibited-icon">
+              <Icon name="ban" />
+            </span>
+            {t(key)}
           </li>
         ))}
       </ul>

@@ -78,6 +78,9 @@ export default function HeaderSearch({ open, onOpenChange }) {
         onClick={() => onOpenChange(!open)}
       >
         <Icon name="search" strokeWidth={1.9} />
+        <span className="search-toggle-label" aria-hidden="true">
+          {t('navSearch')}
+        </span>
       </button>
 
       {open && (
@@ -130,7 +133,7 @@ export default function HeaderSearch({ open, onOpenChange }) {
                   {results.map((p) => (
                     <li key={p.id}>
                       <Link data-result to={`/product/${p.id}`} onClick={() => close()}>
-                        <span className={`search-thumb cat-tile cat--${p.category}`}>
+                        <span className="search-thumb cat-tile">
                           <Icon name={p.category} />
                         </span>
                         <span className="search-text">

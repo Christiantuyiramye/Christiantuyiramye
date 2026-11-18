@@ -15,6 +15,8 @@ AI-powered sourcing, logistics and commerce bridge between Rwanda and Asian manu
 
 React + Vite, React Router for navigation: home page (hero → why us → how it works → 20-item starter catalog with live door prices → landed-cost estimator → WhatsApp request form → prohibited-items list → T&Cs) plus `/product/:id`, `/cart`, `/checkout`, `/order-confirmation`. Full EN / Kinyarwanda toggle.
 
+**Design:** monochrome with one yellow accent (`#010101`, `#f2f0ea`, `#edcf5d`, `#a4a4a4`), set in [Satoshi](https://www.fontshare.com/fonts/satoshi). **Light and dark themes**: the site follows the visitor's device setting until they use the sun/moon toggle in the header, which is then remembered. All colours are tokens at the top of `src/styles.css` — change a theme there, not in individual rules.
+
 ```bash
 cd cmartbridge
 npm install

@@ -98,7 +98,7 @@ export default function Catalog() {
                   hidden from screen readers. */}
               <Link
                 to={`/product/${p.id}`}
-                className={`product-media cat-tile cat--${p.category}`}
+                className="product-media cat-tile"
                 tabIndex={-1}
                 aria-hidden="true"
               >

@@ -16,9 +16,10 @@ export const STRINGS = {
     en: 'Korea → Kigali, door to door',
     rw: 'Ubukoreya → Kigali, kugeza ku muryango wawe',
   },
+  // **bold** and _italic_ are styled by Hero's richText().
   heroTitle: {
-    en: 'Order anything from Korea. Delivered to your door in Kigali.',
-    rw: 'Tumiza icyo ushaka cyose mu Bukoreya. Tukikugezaho ku muryango wawe i Kigali.',
+    en: 'Order _anything_ from **Korea.** Delivered to your door in **Kigali.**',
+    rw: 'Tumiza _icyo ushaka cyose_ mu **Bukoreya.** Tukikugezaho ku muryango wawe i **Kigali.**',
   },
   heroSub: {
     en: 'K-beauty, K-pop merch, phone & fashion accessories — bought in Korea by a real person, quality-checked, and delivered in 2–4 weeks. One all-in price. Pay instantly with MTN MoMo, or Airtel Money/bank transfer via WhatsApp.',
@@ -76,6 +77,12 @@ export const STRINGS = {
   heroShowcaseLabel: { en: 'Popular right now', rw: 'Ibikunzwe ubu' },
   heroCardNote: { en: 'All-in · delivered to your door', rw: 'Byose birimo · bikugezwaho' },
   heroStatusTitle: { en: 'WhatsApp update', rw: 'Ubutumwa kuri WhatsApp' },
+  heroBadgeTop: { en: '2–4', rw: '2–4' },
+  heroBadgeBottom: { en: 'weeks to Kigali', rw: 'ibyumweru kugera i Kigali' },
+
+  // Theme
+  themeToDark: { en: 'Switch to dark mode', rw: 'Hindura ujye ku mwijima' },
+  themeToLight: { en: 'Switch to light mode', rw: 'Hindura ujye ku rumuri' },
 
   ctaOrder: { en: 'Order on WhatsApp', rw: 'Tumiza kuri WhatsApp' },
   ctaCatalog: { en: 'See the catalog', rw: 'Reba ibicuruzwa' },
@@ -237,7 +244,15 @@ export const STRINGS = {
   // Cart / product page / checkout / payment — not yet reviewed by a native speaker,
   // same caveat as the rest of this file.
   cartAria: { en: 'Cart', rw: 'Igikapu' },
-  pdpBack: { en: '← Back to catalog', rw: '← Subira ku bicuruzwa' },
+  navHome: { en: 'Home', rw: 'Ahabanza' },
+  pdpAllIn: {
+    en: 'All-in door price — product, shipping, duty and VAT included.',
+    rw: 'Igiciro cyose — igicuruzwa, ubwikorezi, imisoro na TVA birimo.',
+  },
+  pdpDelivery: {
+    en: 'Delivered to your door in Kigali in 2–4 weeks',
+    rw: 'Bikugezwaho i Kigali mu byumweru 2–4',
+  },
   pdpAddToCart: { en: 'Add to cart', rw: 'Shyira mu gikapu' },
   pdpAdded: { en: 'Added ✓', rw: 'Byashyizwemo ✓' },
   pdpBuyNow: { en: 'Buy now', rw: 'Gura nonaha' },

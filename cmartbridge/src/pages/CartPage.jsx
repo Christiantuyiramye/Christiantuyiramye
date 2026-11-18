@@ -37,7 +37,7 @@ export default function CartPage() {
       <ul className="cart-list">
         {lines.map((line) => (
           <li className="cart-line" key={line.id}>
-            <span className={`cart-thumb cat-tile cat--${line.product.category}`}>
+            <span className="cart-thumb cat-tile">
               <Icon name={line.product.category} />
             </span>
             <Link className="cart-line-name" to={`/product/${line.id}`}>

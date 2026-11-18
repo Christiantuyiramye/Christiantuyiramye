@@ -3,8 +3,10 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { LangContext } from './i18n.js'
 import { FxContext } from './fx.js'
 import { CartContext } from './cart.js'
+import { ThemeContext } from './theme.js'
 import { useFxRate } from './hooks/useFxRate.js'
 import { useCartState } from './hooks/useCartState.js'
+import { useThemeState } from './hooks/useThemeState.js'
 import { useScrollToTop } from './hooks/useScrollToTop.js'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
@@ -40,16 +42,19 @@ export default function App() {
   const [lang, setLang] = useState('en')
   const fx = useFxRate()
   const cart = useCartState()
+  const theme = useThemeState()
 
   return (
     <BrowserRouter>
-      <FxContext.Provider value={fx}>
-        <LangContext.Provider value={{ lang, setLang }}>
-          <CartContext.Provider value={cart}>
-            <Shell />
-          </CartContext.Provider>
-        </LangContext.Provider>
-      </FxContext.Provider>
+      <ThemeContext.Provider value={theme}>
+        <FxContext.Provider value={fx}>
+          <LangContext.Provider value={{ lang, setLang }}>
+            <CartContext.Provider value={cart}>
+              <Shell />
+            </CartContext.Provider>
+          </LangContext.Provider>
+        </FxContext.Provider>
+      </ThemeContext.Provider>
     </BrowserRouter>
   )
 }

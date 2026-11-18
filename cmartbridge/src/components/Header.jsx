@@ -5,6 +5,7 @@ import { CATALOG, CATEGORY_LABELS } from '../data/catalog.js'
 import { CONFIG, landedCost, fmtRwf } from '../lib/pricing.js'
 import { waLink } from '../data/site.js'
 import { useFx } from '../fx.js'
+import { useTheme } from '../theme.js'
 import CartBadge from './CartBadge.jsx'
 import HeaderSearch from './HeaderSearch.jsx'
 import Icon from './Icon.jsx'
@@ -18,6 +19,7 @@ export default function Header() {
   const { lang, setLang } = useLang()
   const t = useT()
   const fx = useFx()
+  const { theme, toggleTheme } = useTheme()
   const { pathname, hash, key } = useLocation()
   const isHome = pathname === '/'
 
@@ -150,7 +152,6 @@ export default function Header() {
               ? `${stats.count} ${t('navItemsLabel')} · ${t('navFrom')} ${fmtRwf(stats.from)}`
               : undefined,
             icon: category,
-            tone: category,
           }
         }),
       ],
@@ -314,7 +315,7 @@ export default function Header() {
                   <div className={`nav-panel${menu.wide ? ' nav-panel--wide' : ''}`}>
                     {menu.links.map((link) => (
                       <Link key={link.to} to={link.to} onClick={closeAll}>
-                        <span className={`nav-tile cat-tile cat--${link.tone ?? 'plain'}`}>
+                        <span className="nav-tile cat-tile">
                           <Icon name={link.icon} />
                         </span>
                         <span className="nav-panel-text">
@@ -338,9 +339,19 @@ export default function Header() {
         </nav>
 
         <div className="header-actions">
+          <HeaderSearch open={searchOpen} onOpenChange={changeSearchOpen} />
+
           {langToggle('lang-toggle--bar')}
 
-          <HeaderSearch open={searchOpen} onOpenChange={changeSearchOpen} />
+          <button
+            type="button"
+            className="theme-toggle"
+            aria-label={theme === 'dark' ? t('themeToLight') : t('themeToDark')}
+            title={theme === 'dark' ? t('themeToLight') : t('themeToDark')}
+            onClick={toggleTheme}
+          >
+            <Icon name={theme === 'dark' ? 'sun' : 'moon'} strokeWidth={1.9} />
+          </button>
 
           <CartBadge />
 
@@ -387,7 +398,7 @@ export default function Header() {
                 <h2>{menu.label}</h2>
                 {menu.links.map((link) => (
                   <Link key={link.to} to={link.to} onClick={closeAll}>
-                    <span className={`nav-tile cat-tile cat--${link.tone ?? 'plain'}`}>
+                    <span className="nav-tile cat-tile">
                       <Icon name={link.icon} />
                     </span>
                     {link.label}

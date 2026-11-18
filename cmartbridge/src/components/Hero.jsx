@@ -17,6 +17,30 @@ const BADGES = ['allInBadge', 'momoBadge', 'photoBadge']
 const STATUS_STEPS = 5
 const STATUS_CURRENT = 2
 
+// Renders **bold** and _italic_ runs from a translated string as elements, so
+// translations can carry the headline's mixed styling without any HTML.
+function richText(text) {
+  return text.split(/(\*\*[^*]+\*\*|_[^_]+_)/).map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) return <strong key={i}>{part.slice(2, -2)}</strong>
+    if (part.length > 2 && part.startsWith('_') && part.endsWith('_')) return <em key={i}>{part.slice(1, -1)}</em>
+    return part
+  })
+}
+
+// Scalloped "sticker" outline on a 100×100 grid: a circle whose radius ripples
+// with `lobes` bumps.
+function wavyCircle(lobes = 12, radius = 44, depth = 3.6, points = 192) {
+  let d = ''
+  for (let i = 0; i <= points; i++) {
+    const angle = (i / points) * Math.PI * 2
+    const r = radius + depth * Math.cos(lobes * angle)
+    d += `${i ? 'L' : 'M'}${(50 + r * Math.cos(angle)).toFixed(2)} ${(50 + r * Math.sin(angle)).toFixed(2)}`
+  }
+  return `${d}Z`
+}
+
+const BADGE_PATH = wavyCircle()
+
 export default function Hero() {
   const t = useT()
   const { lang } = useLang()
@@ -38,7 +62,7 @@ export default function Hero() {
             <span className="hero-eyebrow-dot" aria-hidden="true" />
             {t('heroEyebrow')}
           </p>
-          <h1 className="fade-up delay-1">{t('heroTitle')}</h1>
+          <h1 className="fade-up delay-1">{richText(t('heroTitle'))}</h1>
           <p className="hero-sub fade-up delay-1">{t('heroSub')}</p>
           <div className="hero-ctas fade-up delay-2">
             <a
@@ -47,16 +71,18 @@ export default function Hero() {
               target="_blank"
               rel="noreferrer"
             >
+              <Icon name="chat" />
               {t('ctaOrder')}
             </a>
             <Link className="btn btn-ghost" to="/#catalog">
               {t('ctaCatalog')}
+              <Icon name="arrow" />
             </Link>
           </div>
           <ul className="hero-badges fade-up delay-3">
             {BADGES.map((key) => (
               <li key={key}>
-                <Icon name="check" strokeWidth={2.4} />
+                <Icon name="check" strokeWidth={2.6} />
                 {t(key)}
               </li>
             ))}
@@ -64,6 +90,16 @@ export default function Hero() {
         </div>
 
         <div className="hero-showcase fade-up delay-2">
+          <div className="hero-sticker" aria-hidden="true">
+            <svg viewBox="0 0 100 100">
+              <path d={BADGE_PATH} />
+            </svg>
+            <span className="hero-sticker-text">
+              <strong>{t('heroBadgeTop')}</strong>
+              {t('heroBadgeBottom')}
+            </span>
+          </div>
+
           <p className="showcase-label">{t('heroShowcaseLabel')}</p>
           {showcase.map((p, i) => (
             <Link
@@ -72,7 +108,7 @@ export default function Hero() {
               className="showcase-card"
               style={{ '--i': i }}
             >
-              <span className={`showcase-media cat-tile cat--${p.category}`}>
+              <span className="showcase-media cat-tile">
                 <Icon name={p.category} />
               </span>
               <span className="showcase-body">

@@ -299,6 +299,7 @@ export const STRINGS = {
     rw: 'Tuzakoherereza ubutumwa kuri WhatsApp uko itumiza rigenda: kiguzwe, cyoherejwe, kigeze, kigejejwe.',
   },
   ocRefLabel: { en: 'Reference', rw: 'Nimero y’itumiza' },
+  ocSandboxCharge: { en: 'MTN sandbox test charge', rw: 'Igerageza rya MTN (sandbox)' },
   ocFallback: {
     en: 'We couldn’t find this order — if you just paid, check WhatsApp or contact us.',
     rw: 'Ntitwabashije kubona iri tumiza — niba wamaze kwishyura, reba WhatsApp cyangwa utwandikire.',

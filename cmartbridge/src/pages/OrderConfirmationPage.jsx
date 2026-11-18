@@ -35,9 +35,10 @@ export default function OrderConfirmationPage() {
     <section className="section order-confirmation">
       <h1>{t('ocTitle')}</h1>
 
-      {amount != null && (
-        <p className="product-price">
-          {fmtRwf(amount)} {viaMomo && order?.currency && <small>{order.currency}</small>}
+      {amount != null && <p className="product-price">{fmtRwf(amount)}</p>}
+      {viaMomo && order?.charged && order.charged.currency !== 'RWF' && (
+        <p className="fine-print">
+          {t('ocSandboxCharge')}: {order.charged.amount} {order.charged.currency}
         </p>
       )}
       {referenceId && (

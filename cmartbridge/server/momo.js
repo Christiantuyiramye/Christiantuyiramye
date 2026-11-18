@@ -1,7 +1,8 @@
 // MTN MoMo Collections API client — token caching, Request to Pay, status check.
 // Docs: https://momodeveloper.mtn.com
 // Sandbox note: sandbox `requesttopay` only accepts currency=EUR; production
-// (MOMO_TARGET_ENVIRONMENT=mtnrwanda) uses RWF. See .env.example.
+// (MOMO_TARGET_ENVIRONMENT=mtnrwanda) uses RWF. routes.js picks the currency
+// from the environment.
 
 const BASE_URL = process.env.MOMO_BASE_URL
 const SUBSCRIPTION_KEY = process.env.MOMO_SUBSCRIPTION_KEY

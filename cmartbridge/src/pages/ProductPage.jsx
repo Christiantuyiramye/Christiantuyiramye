@@ -7,6 +7,7 @@ import { MAX_QTY_PER_LINE } from '../lib/cartLimits.js'
 import { waLink } from '../data/site.js'
 import { useFx } from '../fx.js'
 import { useCart } from '../cart.js'
+import Icon from '../components/Icon.jsx'
 
 export default function ProductPage() {
   const { id } = useParams()
@@ -53,6 +54,10 @@ export default function ProductPage() {
       <Link className="link-btn" to="/">
         {t('pdpBack')}
       </Link>
+
+      <div className={`pdp-media cat-tile cat--${product.category}`}>
+        <Icon name={product.category} strokeWidth={1.4} />
+      </div>
 
       <span className="product-cat">{CATEGORY_LABELS[product.category][lang]}</span>
       <h1>{product.name}</h1>

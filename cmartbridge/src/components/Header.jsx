@@ -1,9 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useLang, useT } from '../i18n.js'
-import { CATEGORY_LABELS } from '../data/catalog.js'
+import { CATALOG, CATEGORY_LABELS } from '../data/catalog.js'
+import { CONFIG, landedCost, fmtRwf } from '../lib/pricing.js'
 import { waLink } from '../data/site.js'
+import { useFx } from '../fx.js'
 import CartBadge from './CartBadge.jsx'
+import HeaderSearch from './HeaderSearch.jsx'
+import Icon from './Icon.jsx'
 
 const WA_MESSAGE = 'Muraho CmartBridge! I would like to order from Korea.'
 
@@ -13,7 +17,8 @@ const MOBILE_QUERY = '(max-width: 900px)'
 export default function Header() {
   const { lang, setLang } = useLang()
   const t = useT()
-  const { pathname, hash } = useLocation()
+  const fx = useFx()
+  const { pathname, hash, key } = useLocation()
   const isHome = pathname === '/'
 
   const headerRef = useRef(null)
@@ -22,8 +27,11 @@ export default function Header() {
   const [over, setOver] = useState(isHome)
   const [openMenu, setOpenMenu] = useState(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   // A menu opened by hover must not be closed by the click that follows it.
   const openedByHover = useRef(false)
+  // Set by the arrow keys so the panel's first/last link takes focus once it renders.
+  const focusOnOpen = useRef(null)
 
   useEffect(() => {
     if (!isHome) {
@@ -51,7 +59,8 @@ export default function Header() {
   useEffect(() => {
     setOpenMenu(null)
     setDrawerOpen(false)
-  }, [pathname, hash])
+    setSearchOpen(false)
+  }, [pathname, hash, key])
 
   // Leaving mobile width with the drawer open would otherwise strand it open.
   useEffect(() => {
@@ -64,14 +73,17 @@ export default function Header() {
   }, [])
 
   useEffect(() => {
-    if (!openMenu && !drawerOpen) return
+    if (!openMenu && !drawerOpen && !searchOpen) return
     const onPointerDown = (e) => {
-      if (!headerRef.current?.contains(e.target)) setOpenMenu(null)
+      if (headerRef.current?.contains(e.target)) return
+      setOpenMenu(null)
+      setSearchOpen(false)
     }
     const onKeyDown = (e) => {
       if (e.key !== 'Escape') return
       setOpenMenu(null)
       setDrawerOpen(false)
+      setSearchOpen(false)
     }
     document.addEventListener('pointerdown', onPointerDown)
     document.addEventListener('keydown', onKeyDown)
@@ -79,7 +91,7 @@ export default function Header() {
       document.removeEventListener('pointerdown', onPointerDown)
       document.removeEventListener('keydown', onKeyDown)
     }
-  }, [openMenu, drawerOpen])
+  }, [openMenu, drawerOpen, searchOpen])
 
   useEffect(() => {
     if (!drawerOpen) return
@@ -90,25 +102,57 @@ export default function Header() {
     }
   }, [drawerOpen])
 
+  useEffect(() => {
+    if (!openMenu || !focusOnOpen.current) return
+    const links = headerRef.current?.querySelectorAll(`[data-menu="${openMenu}"] .nav-panel a`)
+    const target = focusOnOpen.current === 'last' ? links?.[links.length - 1] : links?.[0]
+    focusOnOpen.current = null
+    target?.focus()
+  }, [openMenu])
+
+  // Item count and cheapest door price per category, for the Products menu.
+  const categoryStats = useMemo(() => {
+    const stats = {}
+    for (const p of CATALOG) {
+      const price = landedCost(p.priceKrw, p.weightG, p.category, {
+        ...CONFIG,
+        krwToRwf: fx.rate,
+      }).doorPrice
+      const entry = (stats[p.category] ??= { count: 0, from: Infinity })
+      entry.count += 1
+      entry.from = Math.min(entry.from, price)
+    }
+    return stats
+  }, [fx.rate])
+
   const menus = [
     {
       id: 'why',
       label: t('navWhy'),
       links: [
-        { to: '/#why', label: t('navWhyUs'), desc: t('navWhyUsDesc') },
-        { to: '/#how', label: t('navHow'), desc: t('navHowDesc') },
-        { to: '/#terms', label: t('navPromises'), desc: t('navPromisesDesc') },
+        { to: '/#why', label: t('navWhyUs'), desc: t('navWhyUsDesc'), icon: 'star' },
+        { to: '/#how', label: t('navHow'), desc: t('navHowDesc'), icon: 'route' },
+        { to: '/#terms', label: t('navPromises'), desc: t('navPromisesDesc'), icon: 'shield' },
       ],
     },
     {
       id: 'products',
       label: t('navProducts'),
+      wide: true,
       links: [
-        { to: '/#catalog', label: t('navAllProducts'), desc: t('navAllProductsDesc') },
-        ...Object.entries(CATEGORY_LABELS).map(([key, label]) => ({
-          to: `/?category=${key}#catalog`,
-          label: label[lang],
-        })),
+        { to: '/#catalog', label: t('navAllProducts'), desc: t('navAllProductsDesc'), icon: 'all' },
+        ...Object.entries(CATEGORY_LABELS).map(([category, label]) => {
+          const stats = categoryStats[category]
+          return {
+            to: `/?category=${category}#catalog`,
+            label: label[lang],
+            desc: stats
+              ? `${stats.count} ${t('navItemsLabel')} · ${t('navFrom')} ${fmtRwf(stats.from)}`
+              : undefined,
+            icon: category,
+            tone: category,
+          }
+        }),
       ],
     },
   ]
@@ -121,12 +165,21 @@ export default function Header() {
   const closeAll = () => {
     setOpenMenu(null)
     setDrawerOpen(false)
+    setSearchOpen(false)
+  }
+
+  const changeSearchOpen = (next) => {
+    setSearchOpen(next)
+    if (next) {
+      setOpenMenu(null)
+      setDrawerOpen(false)
+    }
   }
 
   const canHover = () => window.matchMedia('(hover: hover)').matches
 
   const openOnHover = (id) => {
-    if (!canHover()) return
+    if (!canHover() || searchOpen) return
     openedByHover.current = true
     setOpenMenu(id)
   }
@@ -137,6 +190,7 @@ export default function Header() {
   }
 
   const toggleMenu = (id) => {
+    setSearchOpen(false)
     setOpenMenu((current) => {
       if (current !== id) {
         openedByHover.current = false
@@ -152,12 +206,71 @@ export default function Header() {
     })
   }
 
+  const onMenuKeyDown = (e, id) => {
+    const links = [...e.currentTarget.querySelectorAll('.nav-panel a')]
+    const index = links.indexOf(document.activeElement)
+
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      if (openMenu !== id || links.length === 0) {
+        openedByHover.current = false
+        focusOnOpen.current = e.key === 'ArrowUp' ? 'last' : 'first'
+        setOpenMenu(id)
+        return
+      }
+      const step = e.key === 'ArrowDown' ? 1 : -1
+      const next =
+        index === -1
+          ? step === 1
+            ? 0
+            : links.length - 1
+          : (index + step + links.length) % links.length
+      links[next].focus()
+    } else if ((e.key === 'Home' || e.key === 'End') && index !== -1) {
+      e.preventDefault()
+      links[e.key === 'Home' ? 0 : links.length - 1].focus()
+    } else if (e.key === 'Escape' && openMenu === id) {
+      e.preventDefault()
+      setOpenMenu(null)
+      e.currentTarget.querySelector('.nav-trigger')?.focus()
+    }
+  }
+
+  // Tabbing out of a menu closes it. A null relatedTarget is a click (Safari
+  // doesn't focus clicked links) — leave that to the outside-click handler, or
+  // the panel would unmount before the click on its link lands.
+  const onMenuBlur = (e, id) => {
+    const next = e.relatedTarget
+    if (next && !e.currentTarget.contains(next)) {
+      setOpenMenu((current) => (current === id ? null : current))
+    }
+  }
+
+  const langToggle = (className = '') => (
+    <div className={`lang-toggle ${className}`} role="group" aria-label={t('navLanguage')}>
+      <button
+        className={lang === 'en' ? 'active' : ''}
+        onClick={() => setLang('en')}
+        aria-pressed={lang === 'en'}
+      >
+        EN
+      </button>
+      <button
+        className={lang === 'rw' ? 'active' : ''}
+        onClick={() => setLang('rw')}
+        aria-pressed={lang === 'rw'}
+      >
+        RW
+      </button>
+    </div>
+  )
+
+  const panelOpen = drawerOpen || searchOpen
+  const modifier = panelOpen ? ' header--opaque' : over ? ' header--over' : ''
+
   return (
     <>
-      <header
-        ref={headerRef}
-        className={`header${over && !drawerOpen ? ' header--over' : ''}`}
-      >
+      <header ref={headerRef} className={`header${modifier}`}>
         <Link className="brand" to="/" onClick={closeAll}>
           <svg className="brand-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M5 7.5h14l-1.15 12.1a2.2 2.2 0 0 1-2.19 2H8.34a2.2 2.2 0 0 1-2.19-2L5 7.5Z" />
@@ -180,8 +293,11 @@ export default function Header() {
               <li
                 className="nav-item"
                 key={menu.id}
+                data-menu={menu.id}
                 onMouseEnter={() => openOnHover(menu.id)}
                 onMouseLeave={() => closeOnHover(menu.id)}
+                onKeyDown={(e) => onMenuKeyDown(e, menu.id)}
+                onBlur={(e) => onMenuBlur(e, menu.id)}
               >
                 <button
                   type="button"
@@ -195,11 +311,16 @@ export default function Header() {
                   </svg>
                 </button>
                 {openMenu === menu.id && (
-                  <div className="nav-panel">
+                  <div className={`nav-panel${menu.wide ? ' nav-panel--wide' : ''}`}>
                     {menu.links.map((link) => (
                       <Link key={link.to} to={link.to} onClick={closeAll}>
-                        {link.label}
-                        {link.desc && <small>{link.desc}</small>}
+                        <span className={`nav-tile cat-tile cat--${link.tone ?? 'plain'}`}>
+                          <Icon name={link.icon} />
+                        </span>
+                        <span className="nav-panel-text">
+                          {link.label}
+                          {link.desc && <small>{link.desc}</small>}
+                        </span>
                       </Link>
                     ))}
                   </div>
@@ -217,22 +338,9 @@ export default function Header() {
         </nav>
 
         <div className="header-actions">
-          <div className="lang-toggle" role="group" aria-label={t('navLanguage')}>
-            <button
-              className={lang === 'en' ? 'active' : ''}
-              onClick={() => setLang('en')}
-              aria-pressed={lang === 'en'}
-            >
-              EN
-            </button>
-            <button
-              className={lang === 'rw' ? 'active' : ''}
-              onClick={() => setLang('rw')}
-              aria-pressed={lang === 'rw'}
-            >
-              RW
-            </button>
-          </div>
+          {langToggle('lang-toggle--bar')}
+
+          <HeaderSearch open={searchOpen} onOpenChange={changeSearchOpen} />
 
           <CartBadge />
 
@@ -246,7 +354,10 @@ export default function Header() {
             aria-expanded={drawerOpen}
             aria-controls="nav-drawer"
             aria-label={drawerOpen ? t('navClose') : t('navMenu')}
-            onClick={() => setDrawerOpen((open) => !open)}
+            onClick={() => {
+              setSearchOpen(false)
+              setDrawerOpen((open) => !open)
+            }}
           >
             <svg viewBox="0 0 24 24" aria-hidden="true" strokeWidth="1.9" strokeLinecap="round">
               {drawerOpen ? (
@@ -276,6 +387,9 @@ export default function Header() {
                 <h2>{menu.label}</h2>
                 {menu.links.map((link) => (
                   <Link key={link.to} to={link.to} onClick={closeAll}>
+                    <span className={`nav-tile cat-tile cat--${link.tone ?? 'plain'}`}>
+                      <Icon name={link.icon} />
+                    </span>
                     {link.label}
                   </Link>
                 ))}
@@ -289,6 +403,10 @@ export default function Header() {
               ))}
             </section>
           </nav>
+          <div className="drawer-lang">
+            <span>{t('navLanguage')}</span>
+            {langToggle()}
+          </div>
           <a
             className="btn btn-primary drawer-cta"
             href={waLink(WA_MESSAGE)}

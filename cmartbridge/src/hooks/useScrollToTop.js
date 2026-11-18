@@ -5,7 +5,9 @@ import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 
 export function useScrollToTop() {
-  const { pathname, hash } = useLocation()
+  // `key` changes on every navigation, so a second search that lands on the same
+  // /#catalog URL still scrolls back to the results.
+  const { pathname, hash, key } = useLocation()
   const lastPathname = useRef(pathname)
 
   useEffect(() => {
@@ -20,5 +22,5 @@ export function useScrollToTop() {
     }
 
     lastPathname.current = pathname
-  }, [pathname, hash])
+  }, [pathname, hash, key])
 }

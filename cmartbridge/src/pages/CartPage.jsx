@@ -5,6 +5,7 @@ import { useCart } from '../cart.js'
 import { cartLines, cartSubtotal } from '../lib/cartTotals.js'
 import { fmtRwf } from '../lib/pricing.js'
 import { MAX_QTY_PER_LINE } from '../lib/cartLimits.js'
+import Icon from '../components/Icon.jsx'
 
 export default function CartPage() {
   const t = useT()
@@ -36,6 +37,9 @@ export default function CartPage() {
       <ul className="cart-list">
         {lines.map((line) => (
           <li className="cart-line" key={line.id}>
+            <span className={`cart-thumb cat-tile cat--${line.product.category}`}>
+              <Icon name={line.product.category} />
+            </span>
             <Link className="cart-line-name" to={`/product/${line.id}`}>
               {line.product.name}
             </Link>

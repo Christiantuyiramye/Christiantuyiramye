@@ -50,6 +50,32 @@ export const STRINGS = {
   navAllProductsDesc: { en: 'The full starter catalog', rw: 'Urutonde rwose' },
   navPricing: { en: 'Pricing', rw: 'Ibiciro' },
   navRequest: { en: 'Request an item', rw: 'Saba igicuruzwa' },
+  navItemsLabel: { en: 'items', rw: 'ibicuruzwa' },
+  navFrom: { en: 'from', rw: 'guhera kuri' },
+
+  // Search
+  navSearch: { en: 'Search products', rw: 'Shakisha ibicuruzwa' },
+  searchPlaceholder: {
+    en: 'Search K-beauty, K-pop, phone cases…',
+    rw: 'Shakisha K-beauty, K-pop, ibikoresho bya telefoni…',
+  },
+  searchClose: { en: 'Close search', rw: 'Funga gushakisha' },
+  searchPopular: { en: 'Popular searches', rw: 'Ibishakishwa cyane' },
+  searchSeeAll: { en: 'See all results in the catalog', rw: 'Reba ibisubizo byose' },
+  searchNone: {
+    en: 'Not in our starter catalog yet — but we can buy almost anything in Korea for you.',
+    rw: 'Ntikiri mu bicuruzwa byacu — ariko dushobora kukigura mu Bukoreya.',
+  },
+  searchRequest: { en: 'Request it from Korea', rw: 'Gisabe mu Bukoreya' },
+  searchResultOne: { en: 'result for', rw: 'igisubizo kuri' },
+  searchResultMany: { en: 'results for', rw: 'ibisubizo kuri' },
+  searchClear: { en: 'Clear search', rw: 'Siba ibyo washakishije' },
+
+  // Hero showcase
+  heroEyebrow: { en: 'Korea → Kigali · door to door', rw: 'Ubukoreya → Kigali · kugeza ku muryango' },
+  heroShowcaseLabel: { en: 'Popular right now', rw: 'Ibikunzwe ubu' },
+  heroCardNote: { en: 'All-in · delivered to your door', rw: 'Byose birimo · bikugezwaho' },
+  heroStatusTitle: { en: 'WhatsApp update', rw: 'Ubutumwa kuri WhatsApp' },
 
   ctaOrder: { en: 'Order on WhatsApp', rw: 'Tumiza kuri WhatsApp' },
   ctaCatalog: { en: 'See the catalog', rw: 'Reba ibicuruzwa' },

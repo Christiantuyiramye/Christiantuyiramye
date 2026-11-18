@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useT } from '../i18n.js'
 import { waLink } from '../data/site.js'
 
@@ -7,6 +8,12 @@ export default function RequestForm() {
   const [name, setName] = useState('')
   const [item, setItem] = useState('')
   const [qty, setQty] = useState(1)
+  // A search with no match links here as ?want=…, so the shopper doesn't retype it.
+  const [searchParams] = useSearchParams()
+  const wanted = searchParams.get('want')
+  useEffect(() => {
+    if (wanted) setItem(wanted)
+  }, [wanted])
 
   const message =
     `Muraho CmartBridge! New request:\n` +

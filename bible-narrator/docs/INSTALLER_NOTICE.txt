@@ -1,0 +1,19 @@
+Bible Narrator 1.0.0
+
+Bible Narrator runs entirely on your computer. It has no accounts, analytics,
+telemetry or cloud AI. It uses the internet only if you choose to download a
+voice or language model.
+
+Licenses
+- Bible Narrator application code: MIT License.
+- Bundled eSpeak NG and phonemizer: GNU GPL-3.0-or-later. The complete source
+  code for this build is available from the project repository.
+- Bundled texts: Berean Standard Bible (CC0 1.0); King James Version (public
+  domain; in the United Kingdom subject to Crown letters patent); American
+  Standard Version (public domain); Easton's Bible Dictionary (1897, public
+  domain; digital edition by Theographic Bible Metadata, CC BY-SA 4.0).
+- Fonts: Outfit and Literata, SIL Open Font License 1.1.
+- Optional downloads (Kokoro-82M voices, Qwen language models): Apache-2.0,
+  shown again before each download.
+
+See docs/LICENSES.md in the source repository for full details.

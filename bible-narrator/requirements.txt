@@ -1,0 +1,12 @@
+# Versions the app was built and tested with (Python 3.13, Linux x86-64).
+fastapi==0.164.0
+uvicorn==0.54.0
+httpx==0.28.1
+numpy==2.5.5
+platformdirs==4.14.7
+pypdf==7.1.1
+kokoro-onnx==0.6.1
+onnxruntime==1.32.0
+espeakng-loader==0.2.4
+llama-cpp-python==0.3.37
+pywebview==6.2.1

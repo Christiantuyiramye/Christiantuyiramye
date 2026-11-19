@@ -221,6 +221,8 @@ class RetellEngine:
             text = re.sub(r"\s+", " ", str(item.get("text") or "")).strip()
             text = re.sub(r"\s*[\[(]\d+:\d+(?:[-–]\d+)?[\])]\s*", " ", text).strip()
             if not text or not content_words(text):
+                if text:
+                    removed.append({"text": text, "reason": "not a retelling sentence"})
                 continue
             keys = self._parse_refs(item.get("refs") or [], ref.chapter, by_key)
             reason = self._check(text, keys, verses, by_key, passage_text)

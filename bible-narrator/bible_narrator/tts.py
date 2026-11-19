@@ -226,8 +226,8 @@ ESPEAK_VOICES: list[tuple[str, str, str, str, str]] = [
     # (voice spec, label, accent, gender, description)
     ("en-us+m3", "Basic · Samuel", "American English", "male", "Steady mid-pitch American voice"),
     ("en-us+f3", "Basic · Ruth", "American English", "female", "Clear American voice"),
-    ("en-gb+m1", "Basic · Thomas", "British English", "male", "Lower British voice"),
-    ("en-gb+f2", "Basic · Lydia", "British English", "female", "Bright British voice"),
+    ("en+m1", "Basic · Thomas", "British English", "male", "Lower British voice"),
+    ("en+f2", "Basic · Lydia", "British English", "female", "Bright British voice"),
     ("en-gb-scotland+m4", "Basic · Andrew", "Scottish English", "male", "Scottish accent"),
     ("en-gb-x-rp+f4", "Basic · Martha", "British (RP) English", "female", "Received Pronunciation"),
     ("en-029+m2", "Basic · Silas", "Caribbean English", "male", "Caribbean accent"),

@@ -35,6 +35,15 @@ STOPWORDS = set(
 CAPITAL_OK = {"god", "lord", "i", "he", "him", "his", "spirit", "holy", "heaven", "heavens", "son", "father",
               "scripture", "bible", "christ", "messiah", "king", "the", "a", "an"}
 
+# Common words that start retelling sentences; anything else capitalised at the
+# start of a sentence and absent from the source is treated as a possible new name.
+_STARTERS = set("""soon suddenly immediately early late eventually instead together everyone everything nobody
+    nothing finally there here when while once as because since though although if so but yet and or then now
+    next later afterward afterwards meanwhile still even only both each all some many most few several no not
+    at in on by with without from into after before during until through over under about against among
+    his her its their our your my this that these those what who whom which where how why
+    great large small little old young good bad whole other another same such""".split())
+
 _WORD = re.compile(r"[A-Za-z][A-Za-z'’-]*")
 _SUFFIXES = ("ings", "ing", "eth", "est", "edst", "ed", "es", "s")
 
@@ -46,10 +55,48 @@ def normalize(text: str) -> str:
     return text
 
 
+# Irregular verb forms -> base form, so "broke" matches "breaking", "arose" matches "rise".
+_IRREGULAR = {
+    "arose": "arise", "arisen": "arise", "ate": "eat", "eaten": "eat", "began": "begin", "begun": "begin",
+    "bore": "bear", "born": "bear", "borne": "bear", "brought": "bring", "broke": "break", "broken": "break",
+    "built": "build", "came": "come", "drank": "drink", "drove": "drive", "driven": "drive", "fell": "fall",
+    "fallen": "fall", "fed": "feed", "fled": "flee", "found": "find", "gave": "give", "given": "give", "went": "go",
+    "gone": "go", "hid": "hide", "hidden": "hide", "held": "hold", "kept": "keep", "knew": "know", "known": "know",
+    "laid": "lay", "led": "lead", "left": "leave", "lay": "lie", "made": "make", "met": "meet", "ran": "run",
+    "rose": "rise", "risen": "rise", "said": "say", "saw": "see", "seen": "see", "sent": "send", "sat": "sit",
+    "slept": "sleep", "slew": "slay", "slain": "slay", "spoke": "speak", "spoken": "speak", "spake": "speak",
+    "stood": "stand", "struck": "strike", "smote": "strike", "smitten": "strike", "took": "take", "taken": "take",
+    "taught": "teach", "told": "tell", "thought": "think", "threw": "throw", "thrown": "throw", "wept": "weep",
+    "woke": "wake", "awoke": "wake", "wrote": "write", "written": "write", "won": "win", "bound": "bind",
+    "caught": "catch", "chose": "choose", "chosen": "choose", "fought": "fight", "flew": "fly", "grew": "grow",
+    "heard": "hear", "lost": "lose", "paid": "pay", "sold": "sell", "sang": "sing", "sank": "sink", "shook": "shake",
+    "sought": "seek", "spent": "spend", "stole": "steal", "swore": "swear", "tore": "tear", "wore": "wear",
+    "children": "child", "men": "man", "women": "woman", "people": "person", "feet": "foot", "sheep": "sheep",
+}
+# A few generic words that retellings commonly use for the same thing. Names are
+# never mapped, and names/quotes are checked separately and strictly.
+_EQUIVALENT = {
+    "great": "big", "large": "big", "mighty": "big", "violent": "big", "huge": "big", "fierce": "big", "strong": "big",
+    "ship": "boat", "vessel": "boat",
+    "storm": "windstorm", "gale": "windstorm", "tempest": "windstorm",
+    "reply": "answer", "respond": "answer", "ask": "say", "tell": "say", "speak": "say", "command": "say",
+    "arise": "rise", "awake": "wake", "slay": "kill", "strike": "hit", "behold": "see", "look": "see",
+    "frightened": "afraid", "terrified": "afraid", "fear": "afraid", "scared": "afraid",
+    "lad": "boy", "youth": "boy", "son": "son", "infant": "baby", "babe": "baby",
+    "quiet": "calm", "still": "calm", "peace": "calm",
+    "journey": "travel", "voyage": "travel", "depart": "leave", "dwell": "live", "abode": "live",
+    "slaughter": "kill", "die": "death", "dead": "death", "perish": "death",
+}
+
+
 def stem(word: str) -> str:
     w = word.lower().strip("'-")
     if w.endswith("'s"):
         w = w[:-2]
+    if w in _IRREGULAR:
+        w = _IRREGULAR[w]
+    if w in _EQUIVALENT:
+        return _EQUIVALENT[w]
     for suf in _SUFFIXES:
         if w.endswith(suf) and len(w) - len(suf) >= 3:
             w = w[: -len(suf)]
@@ -58,7 +105,7 @@ def stem(word: str) -> str:
         w = w[:-1]
     if w.endswith("i") and len(w) > 3:  # carries/carried -> carri -> carry-ish
         w = w[:-1] + "y"
-    return w
+    return _EQUIVALENT.get(w, w)
 
 
 def words(text: str) -> list[str]:
@@ -94,11 +141,14 @@ def unsupported_names(sentence: str, source_text: str) -> list[str]:
     for sent in re.split(r"(?<=[.!?;:])\s+", normalize(sentence)):
         toks = words(sent)
         for i, tok in enumerate(toks):
-            if i == 0 or not tok[0].isupper():
+            if not tok[0].isupper():
                 continue
             base = tok.lower().removesuffix("'s").strip("'-")
             if base in CAPITAL_OK or base in src_lower or stem(base) in src_stems:
                 continue
+            if i == 0 and (base in STOPWORDS or base in _STARTERS or len(base) <= 2
+                           or base.endswith(("ed", "ly", "ing", "ful", "ness", "tion", "ous", "ward", "wards", "ever", "one", "body"))):
+                continue  # an ordinary word that happens to start the sentence
             out.append(tok)
     return out
 

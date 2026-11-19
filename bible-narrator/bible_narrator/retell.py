@@ -52,7 +52,7 @@ def _schema(max_sentences: int) -> dict[str, Any]:
                 "items": {
                     "type": "object",
                     "properties": {
-                        "text": {"type": "string", "maxLength": 220},
+                        "text": {"type": "string"},
                         "refs": {"type": "array", "items": {"type": "string"}, "minItems": 1, "maxItems": 6},
                     },
                     "required": ["text", "refs"],

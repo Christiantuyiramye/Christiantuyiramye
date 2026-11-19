@@ -44,7 +44,8 @@ export const store = {
     const pref = Number(this.settings.default_translation);
     const bibles = this.bibles();
     if (pref && bibles.some((b) => b.id === pref)) return pref;
-    return (bibles.find((b) => b.enabled) || bibles[0] || {}).id;
+    const byId = [...bibles].sort((a, b) => a.id - b.id);
+    return (byId.find((b) => b.enabled) || byId[0] || {}).id;
   },
   voiceLabel(id) {
     const v = this.voices.find((x) => x.id === id);

@@ -172,7 +172,7 @@ class KokoroEngine:
             "loaded": self._kokoro is not None,
             "folder": str(self.folder),
             "model": str(self.model_path or ""),
-            "voices": len(self.voice_names),
+            "voices": len(self.voices()),
             "error": self.error,
             "license": KOKORO_LICENSE,
         }

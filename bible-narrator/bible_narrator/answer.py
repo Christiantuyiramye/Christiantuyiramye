@@ -49,8 +49,8 @@ ANSWER_SCHEMA = {
     "type": "object",
     "properties": {
         "status": {"type": "string", "enum": ["answered", "partial", "not_in_sources", "sources_disagree"]},
-        "answer": {"type": "string", "maxLength": 1600},
-        "missing": {"type": "string", "maxLength": 300},
+        "answer": {"type": "string"},
+        "missing": {"type": "string"},
     },
     "required": ["status", "answer"],
 }
@@ -61,6 +61,13 @@ KEYWORD_SCHEMA = {
     "required": ["keywords"],
 }
 
+VERIFY_SCHEMA = {
+    "type": "object",
+    "properties": {"supported": {"type": "string", "enum": ["yes", "no"]}},
+    "required": ["supported"],
+}
+
+_DANGLING = re.compile(r",?\s*\b(?:as (?:stated|mentioned|noted|described|seen|recorded|written|shown|said)(?: in| by)?|according to|see|(?:is |are )?(?:also )?(?:referenced|mentioned|described|recorded) in)\s*(?=[.!?;:,]|$)", re.I)
 _CITE = re.compile(r"\[(\d+(?:\s*,\s*\d+)*)\]")
 
 
@@ -120,6 +127,21 @@ class AnswerEngine:
                 return f"mentions {ref.label()}, which is not in the cited sources"
         return None
 
+    def _verify(self, sentence: str, sources: list[Source]) -> str:
+        """Ask the model whether the cited text states the sentence. Returns yes/no/unknown."""
+        text = "\n\n".join(s.prompt_block(i + 1) for i, s in enumerate(sources))
+        try:
+            r = self.llm.chat_json(
+                [{"role": "system", "content": "You check facts strictly. Answer only from the given text, never from your own knowledge."},
+                 {"role": "user", "content": f"TEXT:\n{text}\n\nCLAIM: {sentence}\n\nDoes the TEXT clearly state this CLAIM? "
+                                             "Answer \"yes\" only if every part of the claim is stated in the TEXT. Answer \"no\" if any part "
+                                             "is missing, different, or contradicted. Reply in JSON."}],
+                VERIFY_SCHEMA, max_tokens=20, temperature=0.0)
+            return str(r.get("supported", "unknown")).lower()
+        except Exception as e:  # noqa: BLE001 - verification failure keeps the lexical checks only
+            log.info("verification skipped: %s", e)
+            return "unknown"
+
     def _search_only(self, question: str, sources: list[Source]) -> list[dict[str, Any]]:
         return [s.to_dict(i + 1) for i, s in enumerate(sources)]
 
@@ -178,7 +200,10 @@ class AnswerEngine:
             nums = [int(n) for g in _CITE.findall(sent) for n in g.split(",")]
             cited = [sources[n - 1] for n in dict.fromkeys(nums) if 1 <= n <= len(sources)]
             clean = _CITE.sub("", sent).strip()
-            clean = re.sub(r"\s+([.,;:!?])", r"\1", clean)
+            # Drop phrases left dangling once citation markers are removed ("as stated in.").
+            clean = _DANGLING.sub("", clean)
+            clean = re.sub(r"\s+([.,;:!?])", r"\1", clean).strip()
+            clean = re.sub(r",\s*([.!?])$", r"\1", clean)
             if not content_words(clean):
                 continue
             reason = self._check(clean, cited) if cited else "no citation"
@@ -217,6 +242,21 @@ class AnswerEngine:
                     "related": self._search_only(question, sources[:4])}
         if detail != "detailed":
             kept = kept[:4]
+        # Second, independent check: the model judges each sentence against ONLY the
+        # text it cites (an entailment test). Sentences it can't confirm are removed.
+        verified = []
+        for k in kept:
+            verdict = self._verify(k["text"], k["sources"])
+            if verdict == "no":
+                removed.append({"text": k["text"], "reason": "the cited source does not state this (verification check)"})
+            else:
+                verified.append(k)
+        kept = verified
+        if not kept:
+            return {**base, "status": "not_found", "answer": NOT_FOUND, "segments": [], "citations": [],
+                    "removed": removed,
+                    "notes": ["The model's draft answer could not be confirmed by the cited sources, so it was withheld."],
+                    "related": self._search_only(question, sources[:4])}
         # Renumber citations in order of first use.
         order: list[Source] = []
         segments = []

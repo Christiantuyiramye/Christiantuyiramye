@@ -45,6 +45,9 @@ class AppState:
             first_run = not self.library.sources()
             if first_run:
                 self.library.install_starter_content()
+                bsb = self.db.one("SELECT id FROM sources WHERE builtin_key = 'bsb'")
+                if bsb and not self.settings.get("default_translation"):
+                    self.settings.update({"default_translation": str(bsb["id"])})
         self.retriever = Retriever(self.db)
         self.llm = LLMManager(self.settings)
         kokoro_dir = Path(self.settings.get("kokoro_dir") or self.paths.kokoro)
@@ -305,6 +308,8 @@ def create_app(state: AppState, token: str | None = None, allowed_hosts: tuple[s
         if not s.tts.kokoro.installed:
             raise HTTPException(400, "No Kokoro model (.onnx) and voice files (.bin) were found in that folder.")
         s.settings.update({"kokoro_dir": str(folder)})
+        if not str(s.settings.get("default_voice", "")).startswith("kokoro:"):
+            s.settings.update({"default_voice": s.tts.default_voice()})
         return s.tts.status()
 
     @app.delete("/api/audio-cache")

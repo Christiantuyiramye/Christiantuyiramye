@@ -94,9 +94,11 @@ def create_app(state: AppState, token: str | None = None, allowed_hosts: tuple[s
         response = await call_next(request)
         response.headers["Cache-Control"] = "no-store"
         response.headers["X-Content-Type-Options"] = "nosniff"
+        # 'unsafe-eval' is needed by the desktop window's (pywebview) JS bridge; the page
+        # only ever loads the app's own scripts, and nothing remote.
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; img-src 'self' data: blob:; media-src 'self' blob: data:; "
-            "style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; font-src 'self'"
+            "style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-eval'; connect-src 'self'; font-src 'self'"
         )
         return response
 

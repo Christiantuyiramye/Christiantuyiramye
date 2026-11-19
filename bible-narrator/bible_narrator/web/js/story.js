@@ -320,7 +320,7 @@ export function openTheater() {
       recorder = null;
       status.textContent = "Saving video…";
       try {
-        const name = (player.playlist?.title || "story").replace(/[^\w .-]/g, "");
+        const name = (player.playlist?.title || "story").replace(/:/g, "-").replace(/[^\w .-]/g, "");
         const res = await api.raw("POST", `/api/export/video?${api.qs({ name })}`, blob, { "Content-Type": mime.split(";")[0] });
         const j = await res.json();
         status.textContent = `Saved: ${j.path}`;

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Bible Narrator
+Comment=Listen to Scripture, hear retellings and ask questions — offline
+Exec=BibleNarrator
+Icon=bible-narrator
+Categories=Education;AudioVideo;
+Terminal=false

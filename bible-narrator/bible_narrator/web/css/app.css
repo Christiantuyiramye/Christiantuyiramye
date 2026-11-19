@@ -266,7 +266,7 @@ hr.sep { border: 0; border-top: 1px solid var(--line); margin: 18px 0; }
 @keyframes flash { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: none; } }
 .removed { font-size: 13px; color: var(--muted); }
 .removed summary { cursor: pointer; }
-.composer { position: sticky; bottom: 0; padding: 14px 0 6px; background: linear-gradient(transparent, var(--bg) 30%); }
+.composer { position: sticky; bottom: -40px; padding: 18px 0 46px; margin-bottom: -40px; background: linear-gradient(transparent, var(--bg) 22%); z-index: 2; }
 .composer .box { display: flex; gap: 10px; align-items: flex-end; background: var(--surface); border-radius: 26px; padding: 8px 8px 8px 18px; box-shadow: var(--shadow); }
 .composer textarea { flex: 1; border: 0; outline: none; resize: none; background: transparent; padding: 10px 0; max-height: 160px; }
 

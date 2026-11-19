@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bible-narrator"
+version = "1.0.0"
+description = "A private, offline Bible reader, narrator and study assistant with local AI and local voices."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "httpx>=0.27",
+    "numpy>=1.26",
+    "platformdirs>=4",
+    "pypdf>=4",
+    "kokoro-onnx>=0.4",          # natural voices (pulls onnxruntime + espeakng-loader)
+    "llama-cpp-python>=0.3",     # local language model
+    "pywebview>=5",              # desktop window
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pyinstaller>=6"]
+
+[project.scripts]
+bible-narrator = "bible_narrator.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["bible_narrator*"]
+
+[tool.setuptools.package-data]
+bible_narrator = ["web/**/*", "data/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
